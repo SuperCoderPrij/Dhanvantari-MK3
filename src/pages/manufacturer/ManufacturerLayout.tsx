@@ -44,13 +44,16 @@ export default function ManufacturerLayout() {
       {/* Sidebar */}
       <div className="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl hidden md:flex flex-col">
         <div className="p-6 border-b border-slate-800">
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2 cursor-pointer" 
+            onClick={() => navigate("/")}
+          >
             <img 
               src="https://harmless-tapir-303.convex.cloud/api/storage/6fe7d1e8-1ae1-4599-8bb9-5c6b39e1af03" 
               alt="Logo" 
               className="h-8 w-8 rounded-full" 
             />
-            <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">
               Dhanvantari
             </span>
           </div>
