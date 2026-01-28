@@ -31,7 +31,7 @@ export function Hero() {
             <Button
               onClick={() => {
                 console.log("Navigating to scan/app");
-                navigate("/auth");
+                navigate("/auth?redirect=/dashboard/scan");
               }}
               size="lg"
               className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300 text-lg px-8 py-6 cursor-pointer"
@@ -43,7 +43,7 @@ export function Hero() {
             <Button
               onClick={() => {
                 console.log("Navigating to manufacturer");
-                navigate("/auth");
+                navigate("/auth?redirect=/manufacturer");
               }}
               size="lg"
               variant="outline"
