@@ -4,11 +4,30 @@ import { LayoutDashboard, Package, PlusCircle, QrCode, FileText, LogOut, Setting
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 export default function ManufacturerLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate(`/auth?redirect=${encodeURIComponent(location.pathname)}`);
+    }
+  }, [isLoading, isAuthenticated, navigate, location]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="animate-pulse">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/manufacturer" },

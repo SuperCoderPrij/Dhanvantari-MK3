@@ -12,23 +12,9 @@ import { RecentScans } from "./components/RecentScans";
 export default function ConsumerDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   const scanHistory = useQuery(api.scans.getUserScanHistory, { limit: 10 });
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate(`/auth?redirect=${encodeURIComponent(location.pathname)}`);
-    }
-  }, [isLoading, isAuthenticated, navigate, location]);
-
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4 pb-20">
