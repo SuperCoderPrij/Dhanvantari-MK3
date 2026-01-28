@@ -63,24 +63,26 @@ createRoot(document.getElementById("root")!).render(
       <ConvexAuthProvider client={convex}>
         <BrowserRouter>
           <RouteSyncer />
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
-              
-              <Route path="/dashboard" element={<Dashboard />}>
-                <Route index element={<DashboardHome />} />
-                <Route path="scan" element={<MedicineScan />} />
-                <Route path="medicines" element={<Medicines />} />
-                <Route path="records" element={<HealthRecords />} />
-                <Route path="prescriptions" element={<Prescriptions />} />
-                <Route path="alerts" element={<Alerts />} />
-                <Route path="settings" element={<Settings />} />
-              </Route>
+          <div className="relative flex min-h-screen flex-col">
+            <Suspense fallback={<RouteLoading />}>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
+                
+                <Route path="/dashboard" element={<Dashboard />}>
+                  <Route index element={<DashboardHome />} />
+                  <Route path="scan" element={<MedicineScan />} />
+                  <Route path="medicines" element={<Medicines />} />
+                  <Route path="records" element={<HealthRecords />} />
+                  <Route path="prescriptions" element={<Prescriptions />} />
+                  <Route path="alerts" element={<Alerts />} />
+                  <Route path="settings" element={<Settings />} />
+                </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </div>
         </BrowserRouter>
         <Toaster />
       </ConvexAuthProvider>
