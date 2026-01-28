@@ -11,7 +11,7 @@ export const getManufacturerMedicines = query({
     const user = await ctx.db
       .query("users")
       .withIndex("email", (q) => q.eq("email", identity.email!))
-      .unique();
+      .first();
 
     if (!user) return [];
 
@@ -32,7 +32,7 @@ export const getManufacturerStats = query({
         const user = await ctx.db
             .query("users")
             .withIndex("email", (q) => q.eq("email", identity.email!))
-            .unique();
+            .first();
 
         if (!user) return { totalMedicines: 0, totalBatches: 0, totalScans: 0 };
 
@@ -79,7 +79,7 @@ export const createMedicine = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("email", (q) => q.eq("email", identity.email!))
-      .unique();
+      .first();
 
     if (!user) throw new Error("User not found");
 
