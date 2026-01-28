@@ -1,1 +1,1 @@
-cat src/pages/consumer/Layout.tsx
+head -n 5 src/pages/manufacturer/CreateMedicine.tsx

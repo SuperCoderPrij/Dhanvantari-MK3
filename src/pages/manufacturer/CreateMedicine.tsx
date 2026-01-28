@@ -1,25 +1,16 @@
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Shield, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useWeb3, POLYGON_AMOY_CHAIN_ID } from "@/hooks/use-web3";
 import { ethers } from "ethers";
 import { PHARMA_NFT_ABI, PHARMA_NFT_ADDRESS } from "@/lib/blockchain";
+import { WalletAlerts } from "./components/WalletAlerts";
+import { CreateMedicineForm } from "./components/CreateMedicineForm";
 
 export default function CreateMedicine() {
   const navigate = useNavigate();
@@ -52,14 +43,6 @@ export default function CreateMedicine() {
     const formData = new FormData(e.currentTarget);
     const quantity = Number(formData.get("quantity"));
 
-    // For real blockchain transactions, we might want to limit batch size or handle it differently
-    // Since we are minting 1 NFT per batch in this simplified logic (or loop for units?)
-    // The prompt says "Manufacturer mints NFT". Usually 1 NFT = 1 Batch or 1 Unit.
-    // The contract supports minting individual items. 
-    // For this demo, let's assume we mint ONE NFT representing the BATCH for simplicity and gas costs,
-    // OR we loop. The prompt says "NFT generation MUST be implemented".
-    // Let's mint ONE NFT for the Batch to keep it usable on testnet without waiting for 100 txs.
-    
     try {
       const signer = await provider?.getSigner();
       if (!signer) throw new Error("No signer available");
@@ -68,18 +51,16 @@ export default function CreateMedicine() {
 
       const medicineName = formData.get("medicineName") as string;
       const batchNumber = formData.get("batchNumber") as string;
-      // Get manufacturer name from form instead of user object directly
       const manufacturerName = formData.get("manufacturerName") as string || user.name || "Unknown Manufacturer";
       const expiryDate = formData.get("expiryDate") as string;
       const manufacturingDate = formData.get("manufacturingDate") as string;
       const medicineType = formData.get("medicineType") as string;
       const mrp = Number(formData.get("mrp"));
 
-      // Create Metadata (On-chain via Data URI for simplicity, or IPFS)
       const metadata = {
         name: `${medicineName} - Batch ${batchNumber}`,
         description: `Authentic ${medicineName} manufactured by ${manufacturerName}`,
-        image: "https://vly.ai/logo.png", // Placeholder image
+        image: "https://vly.ai/logo.png",
         attributes: [
             { trait_type: "Batch", value: batchNumber },
             { trait_type: "Manufacturer", value: manufacturerName },
@@ -89,14 +70,13 @@ export default function CreateMedicine() {
       };
 
       const tokenURI = `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
-      const medicineIdUUID = crypto.randomUUID(); // Internal ID reference
+      const medicineIdUUID = crypto.randomUUID();
 
       toast.info("Confirm Transaction", {
         description: "Please confirm the minting transaction in MetaMask...",
         style: { color: "black", backgroundColor: "white" }
       });
 
-      // Call Smart Contract
       const tx = await contract.mintMedicine(
         account,
         tokenURI,
@@ -115,9 +95,6 @@ export default function CreateMedicine() {
       const receipt = await tx.wait();
       console.log("Transaction Receipt:", receipt);
       
-      // Get Token ID from events
-      // Event: MedicineMinted(uint256 indexed tokenId, string batchNumber, address manufacturer)
-      // Fallback: Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
       let tokenId = "";
       
       if (receipt && receipt.logs) {
@@ -133,7 +110,6 @@ export default function CreateMedicine() {
                     break;
                 }
                 if (parsed.name === "Transfer") {
-                    // Transfer(from, to, tokenId) - args[2] is tokenId
                     tokenId = parsed.args[2].toString();
                     console.log("Found TokenID from Transfer:", tokenId);
                 }
@@ -150,7 +126,6 @@ export default function CreateMedicine() {
         throw new Error("Failed to retrieve Token ID from transaction logs. The transaction may have succeeded but the event was not found.");
       }
 
-      // Save to Convex (Digital Twin)
       await createMedicine({
         medicineName,
         manufacturerName,
@@ -159,13 +134,13 @@ export default function CreateMedicine() {
         manufacturingDate,
         expiryDate,
         mrp,
-        quantity: quantity, // We still track quantity in DB, even if we minted 1 Batch NFT
+        quantity: quantity,
         tokenId: tokenId,
         transactionHash: receipt.hash,
         contractAddress: PHARMA_NFT_ADDRESS,
         qrCodeData: JSON.stringify({
           contract: PHARMA_NFT_ADDRESS,
-          tokenId: tokenId, // This is the BATCH Token ID
+          tokenId: tokenId,
           batch: batchNumber
         }),
       });
@@ -178,7 +153,7 @@ export default function CreateMedicine() {
       navigate("/manufacturer/medicines");
     } catch (error: any) {
       console.error(error);
-      toast.dismiss(); // Dismiss all toasts to be safe, or we could track the ID
+      toast.dismiss();
       toast.error("Failed to mint medicine", {
         description: error.reason || error.message || "Transaction failed",
         style: { color: "black", backgroundColor: "white" }
@@ -206,190 +181,20 @@ export default function CreateMedicine() {
         </div>
       </motion.div>
 
-      {!account && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 flex items-center justify-between"
-        >
-          <div className="flex items-center gap-3">
-            <Shield className="h-5 w-5 text-yellow-400" />
-            <div>
-              <h3 className="font-medium text-yellow-400">Wallet Connection Required</h3>
-              <p className="text-sm text-yellow-400/80">You need to connect your MetaMask wallet to mint NFTs.</p>
-            </div>
-          </div>
-          <Button 
-            onClick={connectWallet}
-            variant="outline" 
-            className="border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10"
-          >
-            Connect Wallet
-          </Button>
-        </motion.div>
-      )}
+      <WalletAlerts 
+        account={account} 
+        chainId={chainId} 
+        connectWallet={connectWallet} 
+        switchToAmoy={switchToAmoy} 
+      />
 
-      {account && chainId !== POLYGON_AMOY_CHAIN_ID && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4 flex items-center justify-between"
-        >
-          <div className="flex items-center gap-3">
-            <Shield className="h-5 w-5 text-purple-400" />
-            <div>
-              <h3 className="font-medium text-purple-400">Wrong Network</h3>
-              <p className="text-sm text-purple-400/80">Please switch to Polygon Amoy Testnet to mint NFTs.</p>
-            </div>
-          </div>
-          <Button 
-            onClick={switchToAmoy}
-            variant="outline" 
-            className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
-          >
-            Switch Network
-          </Button>
-        </motion.div>
-      )}
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
-        <Card className="bg-slate-900/50 backdrop-blur-xl border border-cyan-500/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Shield className="h-5 w-5 text-cyan-400" />
-              Batch Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="medicineName" className="text-gray-300">Medicine Name</Label>
-                  <Input
-                    id="medicineName"
-                    name="medicineName"
-                    placeholder="e.g. Amoxicillin 500mg"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="batchNumber" className="text-gray-300">Batch Number</Label>
-                  <Input
-                    id="batchNumber"
-                    name="batchNumber"
-                    placeholder="e.g. BATCH-2024-001"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="manufacturerName" className="text-gray-300">Manufacturer Name</Label>
-                  <Input
-                    id="manufacturerName"
-                    name="manufacturerName"
-                    defaultValue={user?.name || ""}
-                    placeholder="e.g. PharmaCorp Ltd."
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="medicineType" className="text-gray-300">Type</Label>
-                  <Select name="medicineType" required>
-                    <SelectTrigger className="bg-slate-950/50 border-slate-800 text-white">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-slate-800 text-white">
-                      <SelectItem value="tablet">Tablet</SelectItem>
-                      <SelectItem value="capsule">Capsule</SelectItem>
-                      <SelectItem value="syrup">Syrup</SelectItem>
-                      <SelectItem value="injection">Injection</SelectItem>
-                      <SelectItem value="ointment">Ointment</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="quantity" className="text-gray-300">Quantity (Units)</Label>
-                  <Input
-                    id="quantity"
-                    name="quantity"
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="e.g. 50"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                  <p className="text-xs text-gray-500">Max 100 units for this demo</p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="manufacturingDate" className="text-gray-300">Manufacturing Date</Label>
-                  <Input
-                    id="manufacturingDate"
-                    name="manufacturingDate"
-                    type="date"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="expiryDate" className="text-gray-300">Expiry Date</Label>
-                  <Input
-                    id="expiryDate"
-                    name="expiryDate"
-                    type="date"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="mrp" className="text-gray-300">MRP ($)</Label>
-                  <Input
-                    id="mrp"
-                    name="mrp"
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                    className="bg-slate-950/50 border-slate-800 text-white"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-800">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || !account || chainId !== POLYGON_AMOY_CHAIN_ID}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white py-6 text-lg font-semibold shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Minting Batch NFTs...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-5 w-5" />
-                      Mint Medicine Batch
-                    </>
-                  )}
-                </Button>
-                <p className="text-center text-xs text-gray-500 mt-4">
-                  This action will create a permanent record on the blockchain.
-                  Gas fees may apply.
-                </p>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </motion.div>
+      <CreateMedicineForm 
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        account={account}
+        chainId={chainId}
+        defaultManufacturerName={user?.name}
+      />
     </div>
   );
 }
