@@ -6,32 +6,19 @@ import { verificationStatusValidator } from "./schema";
 export const list = query({
   args: {
     searchQuery: v.optional(v.string()),
-    verificationStatus: v.optional(verificationStatusValidator),
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    let medicines;
-
-    if (args.verificationStatus) {
-      medicines = await ctx.db
-        .query("medicines")
-        .withIndex("by_verification_status", (q) =>
-          q.eq("verificationStatus", args.verificationStatus!)
-        )
-        .take(args.limit || 100);
-    } else {
-      medicines = await ctx.db
-        .query("medicines")
-        .take(args.limit || 100);
-    }
+    const medicines = await ctx.db
+      .query("medicines")
+      .take(args.limit || 100);
 
     if (args.searchQuery) {
       const searchLower = args.searchQuery.toLowerCase();
       return medicines.filter(
         (med) =>
-          med.name.toLowerCase().includes(searchLower) ||
-          med.genericName.toLowerCase().includes(searchLower) ||
-          med.manufacturer.toLowerCase().includes(searchLower)
+          med.medicineName.toLowerCase().includes(searchLower) ||
+          med.manufacturerName.toLowerCase().includes(searchLower)
       );
     }
 
@@ -53,7 +40,7 @@ export const getByQrCode = query({
   handler: async (ctx, args) => {
     const medicine = await ctx.db
       .query("medicines")
-      .withIndex("by_qr_code", (q) => q.eq("qrCode", args.qrCode))
+      .withIndex("by_qr_code", (q) => q.eq("qrCodeData", args.qrCode))
       .unique();
     return medicine;
   },
@@ -65,7 +52,7 @@ export const verifyMedicine = query({
   handler: async (ctx, args) => {
     const medicine = await ctx.db
       .query("medicines")
-      .withIndex("by_qr_code", (q) => q.eq("qrCode", args.qrCode))
+      .withIndex("by_qr_code", (q) => q.eq("qrCodeData", args.qrCode))
       .unique();
 
     if (!medicine) {
@@ -79,16 +66,13 @@ export const verifyMedicine = query({
     const isExpired = expiryDate < new Date();
 
     return {
-      isValid: !isExpired && !medicine.isRecalled && medicine.verificationStatus === "verified",
+      isValid: !isExpired && medicine.isActive,
       medicine,
       isExpired,
-      isRecalled: medicine.isRecalled,
       message: isExpired
         ? "Medicine has expired"
-        : medicine.isRecalled
-        ? "Medicine has been recalled"
-        : medicine.verificationStatus !== "verified"
-        ? "Medicine verification pending"
+        : !medicine.isActive
+        ? "Medicine is not active"
         : "Medicine is authentic and safe to use",
     };
   },
@@ -97,22 +81,17 @@ export const verifyMedicine = query({
 // Add new medicine (for manufacturers)
 export const create = mutation({
   args: {
-    name: v.string(),
-    genericName: v.string(),
-    manufacturer: v.string(),
-    manufacturerId: v.optional(v.id("organizations")),
+    medicineName: v.string(),
+    manufacturerName: v.string(),
     batchNumber: v.string(),
+    medicineType: v.string(),
     manufacturingDate: v.string(),
     expiryDate: v.string(),
-    composition: v.string(),
-    dosageForm: v.string(),
-    strength: v.string(),
-    price: v.number(),
-    description: v.string(),
-    sideEffects: v.optional(v.string()),
-    contraindications: v.optional(v.string()),
-    storageConditions: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
+    mrp: v.number(),
+    quantity: v.number(),
+    tokenId: v.string(),
+    transactionHash: v.string(),
+    contractAddress: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -121,60 +100,15 @@ export const create = mutation({
     }
 
     // Generate unique QR code
-    const qrCode = `MED-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const qrCodeData = `MED-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const medicineId = await ctx.db.insert("medicines", {
       ...args,
-      qrCode,
-      verificationStatus: "pending",
-      isRecalled: false,
+      manufacturerId: identity.subject as any,
+      qrCodeData,
+      isActive: true,
     });
 
     return medicineId;
-  },
-});
-
-// Update medicine verification status
-export const updateVerificationStatus = mutation({
-  args: {
-    medicineId: v.id("medicines"),
-    status: verificationStatusValidator,
-    blockchainHash: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    await ctx.db.patch(args.medicineId, {
-      verificationStatus: args.status,
-      blockchainHash: args.blockchainHash,
-    });
-
-    return { success: true };
-  },
-});
-
-// Mark medicine as recalled
-export const recallMedicine = mutation({
-  args: {
-    medicineId: v.id("medicines"),
-    reason: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    await ctx.db.patch(args.medicineId, {
-      isRecalled: true,
-    });
-
-    // Create alert for all users who have this medicine
-    // This would be implemented with a more complex query in production
-
-    return { success: true };
   },
 });

@@ -36,9 +36,9 @@ export default function Medicines() {
           <Card key={medicine._id}>
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{medicine.name}</CardTitle>
-                <Badge variant={medicine.verificationStatus === "verified" ? "default" : "secondary"}>
-                  {medicine.verificationStatus}
+                <CardTitle className="text-lg">{medicine.medicineName}</CardTitle>
+                <Badge variant={medicine.isActive ? "default" : "secondary"}>
+                  {medicine.isActive ? "Active" : "Inactive"}
                 </Badge>
               </div>
             </CardHeader>
@@ -46,7 +46,7 @@ export default function Medicines() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Manufacturer:</span>
-                  <span className="font-medium">{medicine.manufacturer}</span>
+                  <span className="font-medium">{medicine.manufacturerName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Batch:</span>
@@ -58,7 +58,7 @@ export default function Medicines() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Price:</span>
-                  <span>${medicine.price}</span>
+                  <span>${medicine.mrp}</span>
                 </div>
               </div>
             </CardContent>

@@ -7,8 +7,6 @@ export const ROLES = {
   ADMIN: "admin",
   USER: "user",
   MEMBER: "member",
-  DOCTOR: "doctor",
-  PHARMACIST: "pharmacist",
   MANUFACTURER: "manufacturer",
 } as const;
 
@@ -16,8 +14,6 @@ export const roleValidator = v.union(
   v.literal(ROLES.ADMIN),
   v.literal(ROLES.USER),
   v.literal(ROLES.MEMBER),
-  v.literal(ROLES.DOCTOR),
-  v.literal(ROLES.PHARMACIST),
   v.literal(ROLES.MANUFACTURER),
 );
 export type Role = Infer<typeof roleValidator>;
@@ -52,57 +48,57 @@ const schema = defineSchema(
 
       role: v.optional(roleValidator), // role of the user. do not remove
       
-      // Additional user fields
+      // Additional fields for manufacturers and users
+      companyName: v.optional(v.string()),
+      walletAddress: v.optional(v.string()),
+      isVerified: v.optional(v.boolean()),
+      
+      // User profile fields
       phone: v.optional(v.string()),
-      dateOfBirth: v.optional(v.string()),
       address: v.optional(v.string()),
-      licenseNumber: v.optional(v.string()), // for doctors/pharmacists
-      organizationId: v.optional(v.id("organizations")),
+      dateOfBirth: v.optional(v.string()),
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // Organizations (hospitals, pharmacies, manufacturers)
-    organizations: defineTable({
-      name: v.string(),
-      type: v.union(v.literal("hospital"), v.literal("pharmacy"), v.literal("manufacturer")),
-      address: v.string(),
-      phone: v.string(),
-      email: v.string(),
-      licenseNumber: v.string(),
-      verificationStatus: verificationStatusValidator,
-      createdBy: v.id("users"),
-    }).index("by_type", ["type"])
-      .index("by_verification_status", ["verificationStatus"]),
-
-    // Medicines database
+    // Medicines table - stores NFT medicine data
     medicines: defineTable({
-      name: v.string(),
-      genericName: v.string(),
-      manufacturer: v.string(),
-      manufacturerId: v.optional(v.id("organizations")),
+      tokenId: v.string(), // NFT token ID from blockchain (Batch ID)
+      medicineName: v.string(),
+      manufacturerName: v.string(),
+      manufacturerId: v.id("users"),
       batchNumber: v.string(),
+      medicineType: v.string(), // tablet, syrup, injection, etc.
       manufacturingDate: v.string(),
       expiryDate: v.string(),
-      composition: v.string(),
-      dosageForm: v.string(), // tablet, capsule, syrup, etc.
-      strength: v.string(),
-      price: v.number(),
-      description: v.string(),
-      sideEffects: v.optional(v.string()),
-      contraindications: v.optional(v.string()),
-      storageConditions: v.optional(v.string()),
-      qrCode: v.string(), // unique QR code for verification
-      blockchainHash: v.optional(v.string()), // blockchain transaction hash
-      imageUrl: v.optional(v.string()),
-      verificationStatus: verificationStatusValidator,
-      isRecalled: v.boolean(),
-    }).index("by_batch_number", ["batchNumber"])
+      mrp: v.number(),
+      quantity: v.number(),
+      qrCodeData: v.string(), // QR code content for the batch
+      transactionHash: v.string(), // Blockchain transaction hash
+      contractAddress: v.string(), // Smart contract address
+      isActive: v.boolean(),
+    })
       .index("by_manufacturer", ["manufacturerId"])
-      .index("by_qr_code", ["qrCode"])
-      .index("by_verification_status", ["verificationStatus"]),
+      .index("by_batch", ["batchNumber"])
+      .index("by_token_id", ["tokenId"])
+      .index("by_qr_code", ["qrCodeData"]),
 
-    // Medicine scans (AI-powered scanning history)
+    // Individual Medicine Units
+    medicine_units: defineTable({
+      medicineId: v.id("medicines"),
+      tokenId: v.string(), // Unique Token ID for this unit
+      serialNumber: v.number(), // 1 to N
+      qrCodeData: v.string(), // Unique QR code content
+      isVerified: v.boolean(),
+      status: v.optional(v.string()), // "minted", "sold", "consumed"
+    })
+      .index("by_medicine", ["medicineId"])
+      .index("by_token_id", ["tokenId"])
+      .index("by_qr_code", ["qrCodeData"]),
+
+    // Scan history - tracks all QR code scans
     medicineScans: defineTable({
-      userId: v.id("users"),
+      medicineId: v.optional(v.id("medicines")),
+      unitId: v.optional(v.id("medicine_units")), // Link to specific unit
+      userId: v.optional(v.id("users")),
       imageStorageId: v.id("_storage"),
       scanResult: v.object({
         medicineName: v.optional(v.string()),
@@ -113,9 +109,54 @@ const schema = defineSchema(
       }),
       scanDate: v.number(),
       location: v.optional(v.string()),
-    }).index("by_user", ["userId"]),
+      deviceInfo: v.optional(v.string()),
+      ipAddress: v.optional(v.string()),
+    })
+      .index("by_medicine", ["medicineId"])
+      .index("by_user", ["userId"]),
 
-    // Health records
+    // Counterfeit reports
+    reports: defineTable({
+      medicineId: v.optional(v.id("medicines")),
+      reporterId: v.optional(v.id("users")),
+      qrCodeData: v.optional(v.string()),
+      medicineName: v.optional(v.string()),
+      batchNumber: v.optional(v.string()),
+      reason: v.string(),
+      description: v.optional(v.string()),
+      location: v.optional(v.string()),
+      status: v.string(), // "pending", "reviewed", "resolved"
+      reviewedBy: v.optional(v.id("users")),
+      reviewNotes: v.optional(v.string()),
+    })
+      .index("by_status", ["status"])
+      .index("by_reporter", ["reporterId"]),
+
+    // Batches - for bulk medicine creation
+    batches: defineTable({
+      batchNumber: v.string(),
+      manufacturerId: v.id("users"),
+      medicineCount: v.number(),
+      status: v.string(), // "processing", "completed", "failed"
+      metadata: v.optional(v.string()), // JSON string with batch details
+    })
+      .index("by_manufacturer", ["manufacturerId"])
+      .index("by_batch_number", ["batchNumber"]),
+
+    // Alerts and Notifications
+    alerts: defineTable({
+      userId: v.id("users"),
+      title: v.string(),
+      message: v.string(),
+      severity: v.union(v.literal("info"), v.literal("warning"), v.literal("critical")),
+      isRead: v.boolean(),
+      link: v.optional(v.string()),
+      metadata: v.optional(v.any()),
+    })
+      .index("by_user", ["userId"])
+      .index("by_user_and_read", ["userId", "isRead"]),
+
+    // Health Records
     healthRecords: defineTable({
       userId: v.id("users"),
       recordType: v.union(
@@ -128,20 +169,19 @@ const schema = defineSchema(
       title: v.string(),
       description: v.string(),
       doctorId: v.optional(v.id("users")),
-      hospitalId: v.optional(v.id("organizations")),
+      hospitalId: v.optional(v.id("organizations")), // Note: organizations table not defined yet, using users or string might be safer if orgs not implemented
       date: v.string(),
-      attachments: v.optional(v.array(v.id("_storage"))),
       medications: v.optional(v.array(v.id("medicines"))),
       isPrivate: v.boolean(),
-    }).index("by_user", ["userId"])
-      .index("by_doctor", ["doctorId"])
-      .index("by_record_type", ["recordType"]),
+      fileStorageId: v.optional(v.id("_storage")),
+    })
+      .index("by_user", ["userId"])
+      .index("by_type", ["recordType"]),
 
     // Prescriptions
     prescriptions: defineTable({
-      patientId: v.id("users"),
       doctorId: v.id("users"),
-      hospitalId: v.optional(v.id("organizations")),
+      patientId: v.id("users"),
       diagnosis: v.string(),
       medications: v.array(v.object({
         medicineId: v.id("medicines"),
@@ -154,68 +194,21 @@ const schema = defineSchema(
       validUntil: v.string(),
       status: v.union(v.literal("active"), v.literal("completed"), v.literal("cancelled")),
       notes: v.optional(v.string()),
-      qrCode: v.string(), // for verification at pharmacy
-    }).index("by_patient", ["patientId"])
+      qrCode: v.string(),
+    })
+      .index("by_patient", ["patientId"])
       .index("by_doctor", ["doctorId"])
       .index("by_status", ["status"])
       .index("by_qr_code", ["qrCode"]),
-
-    // Pharmacy orders
-    pharmacyOrders: defineTable({
-      prescriptionId: v.id("prescriptions"),
-      patientId: v.id("users"),
-      pharmacyId: v.id("organizations"),
-      medications: v.array(v.object({
-        medicineId: v.id("medicines"),
-        quantity: v.number(),
-        price: v.number(),
-        batchNumber: v.string(),
-      })),
-      totalAmount: v.number(),
-      orderDate: v.number(),
-      status: v.union(
-        v.literal("pending"),
-        v.literal("processing"),
-        v.literal("ready"),
-        v.literal("completed"),
-        v.literal("cancelled")
-      ),
-      verificationCode: v.string(),
-    }).index("by_patient", ["patientId"])
-      .index("by_pharmacy", ["pharmacyId"])
-      .index("by_prescription", ["prescriptionId"])
-      .index("by_status", ["status"]),
-
-    // Verification logs (blockchain audit trail)
-    verificationLogs: defineTable({
-      entityType: v.union(v.literal("medicine"), v.literal("prescription"), v.literal("organization")),
-      entityId: v.string(),
-      action: v.string(),
-      performedBy: v.id("users"),
-      timestamp: v.number(),
-      blockchainHash: v.optional(v.string()),
-      details: v.string(),
-      ipAddress: v.optional(v.string()),
-    }).index("by_entity", ["entityType", "entityId"])
-      .index("by_user", ["performedBy"]),
-
-    // Alerts and notifications
-    alerts: defineTable({
-      userId: v.id("users"),
-      type: v.union(
-        v.literal("medicine_recall"),
-        v.literal("expiry_warning"),
-        v.literal("prescription_reminder"),
-        v.literal("verification_alert")
-      ),
-      title: v.string(),
-      message: v.string(),
-      severity: v.union(v.literal("info"), v.literal("warning"), v.literal("critical")),
-      isRead: v.boolean(),
-      relatedEntityId: v.optional(v.string()),
-      createdAt: v.number(),
-    }).index("by_user", ["userId"])
-      .index("by_user_and_read", ["userId", "isRead"]),
+      
+    // Organizations (Hospitals, Pharmacies) - Placeholder if needed
+    organizations: defineTable({
+      name: v.string(),
+      type: v.string(),
+      address: v.string(),
+      contact: v.string(),
+      isVerified: v.boolean(),
+    }),
   },
   {
     schemaValidation: false,

@@ -3,7 +3,6 @@
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 
-/* DO NOT CHANGE */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -115,12 +114,19 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    letter-spacing: 0em;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Cinzel Decorative', system-ui, sans-serif;
   }
-  button:not([disabled]),
-  [role="button"]:not([disabled]) {
-    cursor: pointer;
+  .font-sans {
+    font-family: 'Cinzel Decorative', system-ui, sans-serif;
+  }
+  .font-serif {
+    font-family: Georgia, Georgia, serif;
+  }
+  .font-mono {
+    font-family: Menlo, "Courier New", monospace;
   }
 }

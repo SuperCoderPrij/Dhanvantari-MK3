@@ -1,0 +1,9 @@
+<tool_code>
+    <tool_name>executeCommandTool</tool_name>
+    <parameters>
+        <parameter>
+            <name>command</name>
+            <value>cp temp_dhanvantari_2/src/pages/landing/Hero.tsx src/pages/landing/Hero.tsx && cp temp_dhanvantari_2/src/pages/landing/Navbar.tsx src/pages/landing/Navbar.tsx && cp temp_dhanvantari_2/src/pages/landing/HowItWorks.tsx src/pages/landing/HowItWorks.tsx && cp temp_dhanvantari_2/src/pages/landing/CTA.tsx src/pages/landing/CTA.tsx && cp temp_dhanvantari_2/src/pages/landing/ReportForm.tsx src/pages/landing/ReportForm.tsx && cp temp_dhanvantari_2/src/pages/landing/Footer.tsx src/pages/landing/Footer.tsx && cp temp_dhanvantari_2/src/index.css src/index.css && cp temp_dhanvantari_2/src/pages/Landing.tsx src/pages/Landing.tsx</value>
+        </parameter>
+    </parameters>
+</tool_code>

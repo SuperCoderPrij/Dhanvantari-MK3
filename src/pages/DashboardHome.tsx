@@ -18,7 +18,7 @@ export default function DashboardHome() {
     },
     {
       title: "Verified Medicines",
-      value: medicines?.filter((m) => m.verificationStatus === "verified").length || 0,
+      value: medicines?.filter((m) => m.isActive).length || 0,
       icon: Pill,
       color: "text-green-500",
     },

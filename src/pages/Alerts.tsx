@@ -45,7 +45,7 @@ export default function Alerts() {
                   <div>
                     <CardTitle className="text-lg">{alert.title}</CardTitle>
                     <CardDescription>
-                      {formatDistanceToNow(alert.createdAt, { addSuffix: true })}
+                      {formatDistanceToNow(alert._creationTime, { addSuffix: true })}
                     </CardDescription>
                   </div>
                 </div>

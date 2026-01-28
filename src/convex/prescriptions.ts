@@ -61,8 +61,8 @@ export const getPrescriptionById = query({
         const medicineDetails = await ctx.db.get(med.medicineId);
         return {
           ...med,
-          medicineName: medicineDetails?.name || "Unknown Medicine",
-          medicineImage: medicineDetails?.imageUrl,
+          medicineName: medicineDetails?.medicineName || "Unknown Medicine",
+          medicineImage: undefined,
         };
       })
     );
