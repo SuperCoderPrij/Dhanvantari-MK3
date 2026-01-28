@@ -14,6 +14,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function ManufacturerReports() {
   const reports = useQuery(api.reports.getManufacturerReports);
@@ -48,93 +56,42 @@ export default function ManufacturerReports() {
             <p>Great news! There are no pending counterfeit reports.</p>
           </div>
         ) : (
-          reports.map((report, index) => (
-            <motion.div
-              key={report._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 hover:border-cyan-500/30 transition-colors">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-white flex items-center gap-2">
-                        <AlertTriangle className="h-5 w-5 text-red-400" />
-                        Suspicious Activity Reported
-                      </CardTitle>
-                      <CardDescription>
-                        Report ID: {report._id} • {new Date(report._creationTime).toLocaleDateString()}
-                      </CardDescription>
-                    </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Medicine</TableHead>
+                <TableHead>Batch</TableHead>
+                <TableHead>Reason</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {reports?.map((report) => (
+                <TableRow key={report._id}>
+                  <TableCell className="font-medium">{report.medicineName || "Unknown"}</TableCell>
+                  <TableCell>{report.batchNumber || "N/A"}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{report.reason}</Badge>
+                  </TableCell>
+                  <TableCell>{new Date(report._creationTime).toLocaleDateString()}</TableCell>
+                  <TableCell>
                     <Badge
-                      variant="outline"
-                      className={
-                        report.status === "pending"
-                          ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                          : report.status === "resolved"
-                          ? "bg-green-500/10 text-green-400 border-green-500/20"
-                          : "bg-slate-500/10 text-slate-400 border-slate-500/20"
+                      variant={
+                        report.status === "resolved"
+                          ? "default"
+                          : report.status === "reviewed"
+                          ? "secondary"
+                          : "destructive"
                       }
                     >
-                      {report.status.toUpperCase()}
+                      {report.status}
                     </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-400 mb-1">Medicine Details</h4>
-                      <div className="text-white font-medium">
-                        {report.medicine?.medicineName || report.medicineName || "Unknown Medicine"}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Batch: {report.medicine?.batchNumber || report.batchNumber || "N/A"}
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-400 mb-1">Report Reason</h4>
-                      <p className="text-gray-300">{report.reason}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-400 mb-1">Location</h4>
-                      <div className="flex items-center gap-2 text-gray-300">
-                        <MapPin className="h-4 w-4 text-cyan-400" />
-                        {report.location || "Location not provided"}
-                      </div>
-                    </div>
-                    {report.description && (
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-400 mb-1">Additional Details</h4>
-                        <p className="text-gray-300 text-sm">{report.description}</p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-                {report.status === "pending" && (
-                  <CardFooter className="flex justify-end gap-3 border-t border-slate-800 pt-4">
-                    <Button
-                      variant="outline"
-                      className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300"
-                      onClick={() => handleStatusUpdate(report._id, "dismissed")}
-                    >
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Dismiss as False Alarm
-                    </Button>
-                    <Button
-                      className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                      onClick={() => handleStatusUpdate(report._id, "resolved")}
-                    >
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Mark as Resolved
-                    </Button>
-                  </CardFooter>
-                )}
-              </Card>
-            </motion.div>
-          ))
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>

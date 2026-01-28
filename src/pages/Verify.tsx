@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router";
 import { ethers } from "ethers";
 import { motion } from "framer-motion";
 import { Shield, CheckCircle, XCircle, Loader2, ExternalLink, AlertTriangle, Package, Calendar, Info, Sparkles, Bot } from "lucide-react";
@@ -244,7 +244,7 @@ export default function Verify() {
                     </p>
                   )}
                   <p className="text-cyan-400 font-mono text-sm">
-                    {medicineData?.unit?.tokenId || nftData?.tokenId || tokenId}
+                    {(medicineData as any)?.unit?.tokenId || nftData?.tokenId || tokenId}
                   </p>
                   {isDeactivated && (
                       <div className="mt-2 px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs border border-red-500/20">
@@ -281,7 +281,7 @@ export default function Verify() {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500 text-sm">Unit Serial</span>
-                                <span className="text-white text-sm font-medium">#{medicineData?.unit?.serialNumber || "N/A"}</span>
+                                <span className="text-white text-sm font-medium">#{(medicineData as any)?.unit?.serialNumber || "N/A"}</span>
                             </div>
                         </div>
 

@@ -1,12 +1,14 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useNavigate } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Pill, FileText, Scan } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DashboardHome() {
-  const medicines = useQuery(api.medicines.list, { limit: 5 });
-  const scans = useQuery(api.scans.getUserScans, { limit: 5 });
+  const navigate = useNavigate();
+  const medicines = useQuery(api.medicines.getManufacturerMedicines);
+  const scans = useQuery(api.scans.getUserScanHistory, { limit: 5 });
   const records = useQuery(api.healthRecords.getUserRecords, {});
 
   const stats = [
@@ -66,64 +68,47 @@ export default function DashboardHome() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Recent Scans</CardTitle>
-            <CardDescription>Your latest medicine verification scans</CardDescription>
           </CardHeader>
           <CardContent>
-            {scans && scans.length > 0 ? (
-              <div className="space-y-4">
-                {scans.slice(0, 3).map((scan) => (
-                  <div key={scan._id} className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <p className="font-medium">
-                        {scan.scanResult.medicineName || "Unknown Medicine"}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Confidence: {(scan.scanResult.confidence * 100).toFixed(1)}%
-                      </p>
-                    </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        scan.scanResult.isVerified
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {scan.scanResult.isVerified ? "Verified" : "Unverified"}
-                    </span>
+            <div className="space-y-8">
+              {scans?.map((scan) => (
+                <div key={scan._id} className="flex items-center">
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">{scan.medicine?.medicineName || "Unknown"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(scan.scanDate).toLocaleDateString()}
+                    </p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">No scans yet</p>
-            )}
+                  <div className="ml-auto font-medium">
+                      {scan.scanResult.isVerified ? "Verified" : "Failed"}
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
-
-        <Card>
+        <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Health Records</CardTitle>
-            <CardDescription>Your recent health records</CardDescription>
+            <CardTitle>Recent Medicines</CardTitle>
           </CardHeader>
           <CardContent>
-            {records && records.length > 0 ? (
-              <div className="space-y-4">
-                {records.slice(0, 3).map((record) => (
-                  <div key={record._id} className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <p className="font-medium">{record.title}</p>
-                      <p className="text-sm text-muted-foreground">{record.recordType}</p>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{record.date}</span>
+            <div className="space-y-8">
+              {medicines?.slice(0, 5).map((m) => (
+                <div key={m._id} className="flex items-center">
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">{m.medicineName}</p>
+                    <p className="text-sm text-muted-foreground">{m.batchNumber}</p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">No records yet</p>
-            )}
+                  <div className="ml-auto font-medium">
+                      {m.quantity} units
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

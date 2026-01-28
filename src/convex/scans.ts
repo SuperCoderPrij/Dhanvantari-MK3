@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 // Get user's scan history
-export const getUserScans = query({
+export const getUserScanHistory = query({
   args: {
     userId: v.optional(v.id("users")),
     limit: v.optional(v.number()),
@@ -10,46 +10,71 @@ export const getUserScans = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      // Return empty list if not authenticated, or throw
+      return [];
     }
 
-    const userId = args.userId || (identity.subject as any);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", identity.email!))
+      .unique();
+
+    if (!user) return [];
 
     const scans = await ctx.db
       .query("medicineScans")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
       .take(args.limit || 50);
 
-    return scans;
+    // Enrich with medicine data
+    const scansWithMedicine = await Promise.all(
+      scans.map(async (scan) => {
+        let medicine = null;
+        if (scan.medicineId) {
+          medicine = await ctx.db.get(scan.medicineId);
+        }
+        return { ...scan, medicine };
+      })
+    );
+
+    return scansWithMedicine;
   },
 });
 
 // Create new scan record
-export const createScan = mutation({
+export const recordScan = mutation({
   args: {
-    imageStorageId: v.id("_storage"),
-    scanResult: v.object({
-      medicineName: v.optional(v.string()),
-      confidence: v.number(),
-      detectedText: v.optional(v.string()),
-      isVerified: v.boolean(),
-      matchedMedicineId: v.optional(v.id("medicines")),
-    }),
+    medicineId: v.optional(v.id("medicines")),
+    scanResult: v.string(), // "genuine", "counterfeit", "unknown"
     location: v.optional(v.string()),
+    deviceInfo: v.optional(v.string()),
+    imageStorageId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
+    let userId = undefined;
+
+    if (identity) {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("email", (q) => q.eq("email", identity.email!))
+        .unique();
+      userId = user?._id;
     }
 
     const scanId = await ctx.db.insert("medicineScans", {
-      userId: identity.subject as any,
-      imageStorageId: args.imageStorageId,
-      scanResult: args.scanResult,
+      userId,
+      medicineId: args.medicineId,
+      scanResult: {
+        isVerified: args.scanResult === "genuine",
+        confidence: 1,
+        medicineName: "Unknown", // Placeholder, would come from lookup
+      },
       scanDate: Date.now(),
       location: args.location,
+      deviceInfo: args.deviceInfo,
+      imageStorageId: args.imageStorageId || ("" as any), // Handle optional storage
     });
 
     return scanId;
@@ -72,7 +97,10 @@ export const getScanById = query({
     }
 
     // Get the image URL
-    const imageUrl = await ctx.storage.getUrl(scan.imageStorageId);
+    let imageUrl = null;
+    if (scan.imageStorageId) {
+        imageUrl = await ctx.storage.getUrl(scan.imageStorageId);
+    }
 
     return {
       ...scan,

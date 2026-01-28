@@ -14,6 +14,7 @@ import { useWeb3 } from "@/hooks/use-web3";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useNavigate } from "react-router";
 
 // Minimal ERC721 ABI
 const ERC721_ABI = [
@@ -25,6 +26,7 @@ const ERC721_ABI = [
 export default function GenerateQR() {
   const { provider } = useWeb3();
   const medicines = useQuery(api.medicines.getManufacturerMedicines);
+  const navigate = useNavigate();
   
   // Manual Mode State
   const [contractAddress, setContractAddress] = useState("");

@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { Plus, Search, Wallet, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useWeb3 } from "@/hooks/use-web3";
 import { MedicinesTable } from "./components/MedicinesTable";
 import { MedicineDetailsDialog } from "./components/MedicineDetailsDialog";
 import { DeleteMedicineDialog } from "./components/DeleteMedicineDialog";
+import { useNavigate } from "react-router";
 
 export default function ManufacturerMedicines() {
   const medicines = useQuery(api.medicines.getManufacturerMedicines);

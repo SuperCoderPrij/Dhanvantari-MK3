@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { PageLoader } from "@/components/PageLoader";
 
 const QRScanner = lazy(() => import("@/components/QRScanner"));
@@ -344,9 +344,9 @@ export default function ConsumerDashboard() {
                 >
                   <div className="flex items-center gap-3">
                     <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
-                      scan.scanResult === "genuine" ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
+                      scan.scanResult.isVerified ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
                     }`}>
-                      {scan.scanResult === "genuine" ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                      {scan.scanResult.isVerified ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                     </div>
                     <div>
                       <div className="font-medium text-white">
@@ -363,11 +363,11 @@ export default function ConsumerDashboard() {
                     </div>
                   </div>
                   <Badge variant="outline" className={
-                    scan.scanResult === "genuine" 
+                    scan.scanResult.isVerified 
                       ? "border-green-500/20 text-green-400" 
                       : "border-red-500/20 text-red-400"
                   }>
-                    {scan.scanResult}
+                    {scan.scanResult.isVerified ? "Genuine" : "Suspicious"}
                   </Badge>
                 </div>
               ))

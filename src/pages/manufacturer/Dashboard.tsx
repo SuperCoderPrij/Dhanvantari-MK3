@@ -7,10 +7,14 @@ import {
   CheckCircle,
   Scan,
   TrendingUp,
-  Activity
+  Activity,
+  Package,
+  Layers,
+  QrCode
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router";
 
 export default function ManufacturerDashboard() {
   const stats = useQuery(api.medicines.getManufacturerStats);
@@ -41,9 +45,9 @@ export default function ManufacturerDashboard() {
       border: "border-blue-500/20",
     },
     {
-      title: "Active Batches",
-      value: stats?.activeMedicines || 0,
-      icon: CheckCircle,
+      title: "Total Batches",
+      value: stats?.totalBatches || 0,
+      icon: Layers,
       color: "text-green-400",
       bg: "bg-green-500/10",
       border: "border-green-500/20",
@@ -55,14 +59,6 @@ export default function ManufacturerDashboard() {
       color: "text-purple-400",
       bg: "bg-purple-500/10",
       border: "border-purple-500/20",
-    },
-    {
-      title: "Recent Reports",
-      value: stats?.recentReports || 0,
-      icon: AlertTriangle,
-      color: "text-red-400",
-      bg: "bg-red-500/10",
-      border: "border-red-500/20",
     },
   ];
 
@@ -89,26 +85,33 @@ export default function ManufacturerDashboard() {
             animate="show"
             className="contents"
           >
-            {statCards.map((stat, index) => (
-              <motion.div key={index} variants={item}>
-                <Card className={`bg-slate-900/50 backdrop-blur-xl border ${stat.border} shadow-lg`}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-400">
-                      {stat.title}
-                    </CardTitle>
-                    <div className={`p-2 rounded-lg ${stat.bg}`}>
-                      <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      +20.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Medicines</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.totalMedicines || 0}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Batches</CardTitle>
+                <Layers className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.totalBatches || 0}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Scans</CardTitle>
+                <QrCode className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.totalScans || 0}</div>
+              </CardContent>
+            </Card>
           </motion.div>
         )}
       </div>

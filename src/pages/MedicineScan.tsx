@@ -15,7 +15,7 @@ export default function MedicineScan() {
   const [scanResult, setScanResult] = useState<any>(null);
 
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-  const createScan = useMutation(api.scans.createScan);
+  const recordScan = useMutation(api.scans.recordScan);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -56,9 +56,13 @@ export default function MedicineScan() {
       };
 
       // Save scan to database
-      await createScan({
-        imageStorageId: storageId,
-        scanResult: mockResult,
+      // Removed createScan call
+
+      await recordScan({
+          medicineId: undefined, // Or handle this if needed
+          scanResult: "genuine",
+          location: "Unknown",
+          deviceInfo: navigator.userAgent
       });
 
       setScanResult(mockResult);

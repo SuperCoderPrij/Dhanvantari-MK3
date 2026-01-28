@@ -1,11 +1,1 @@
-{
-  "file_paths": [
-    "temp_dhanvantari_2/src/components/QRScanner.tsx",
-    "temp_dhanvantari_2/src/components/PageLoader.tsx",
-    "temp_dhanvantari_2/src/pages/manufacturer/components/MedicinesTable.tsx",
-    "temp_dhanvantari_2/src/pages/manufacturer/components/MedicineDetailsDialog.tsx",
-    "temp_dhanvantari_2/src/pages/manufacturer/components/DeleteMedicineDialog.tsx",
-    "temp_dhanvantari_2/src/lib/blockchain.ts"
-  ],
-  "replace_files_in_context": false
-}
+{"file_paths":["src/convex/scans.ts","src/convex/medicines.ts"],"replace_files_in_context":false}
