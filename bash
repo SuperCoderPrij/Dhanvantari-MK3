@@ -1,1 +1,1 @@
-head -n 5 src/pages/manufacturer/CreateMedicine.tsx
+bun add lucide-react
