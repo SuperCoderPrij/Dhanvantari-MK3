@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/krisodd/Repos/daytona-template/snapshot/vite-template/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

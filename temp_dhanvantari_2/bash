@@ -1,0 +1,1 @@
+pnpm remove @types/react-router-dom && npx convex dev --once && npx tsc -b --noEmit
