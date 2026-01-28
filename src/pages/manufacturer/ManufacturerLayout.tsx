@@ -1,15 +1,17 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Package, PlusCircle, QrCode, FileText, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, Package, PlusCircle, QrCode, FileText, LogOut, Settings, Wallet, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useWeb3 } from "@/hooks/use-web3";
 import { useEffect } from "react";
 
 export default function ManufacturerLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut, isAuthenticated, isLoading } = useAuth();
+  const { signOut, isAuthenticated, isLoading, user } = useAuth();
+  const { account, connectWallet, disconnectWallet } = useWeb3();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -72,7 +74,33 @@ export default function ManufacturerLayout() {
           ))}
         </div>
 
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-800 space-y-4">
+          {user && (
+            <div className="flex items-center gap-3 px-2">
+              <div className="h-8 w-8 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shrink-0">
+                <User className="h-4 w-4 text-cyan-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{user.name || "Manufacturer"}</p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+              </div>
+            </div>
+          )}
+
+          <Button 
+            variant="outline"
+            className={cn(
+              "w-full justify-start border-slate-700 bg-slate-800/50",
+              account 
+                ? "text-green-400 hover:text-green-300 hover:bg-green-500/10 border-green-500/20" 
+                : "text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 border-cyan-500/20"
+            )}
+            onClick={account ? disconnectWallet : connectWallet}
+          >
+            <Wallet className="mr-2 h-4 w-4" />
+            {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "Connect Wallet"}
+          </Button>
+
           <Button 
             variant="ghost" 
             className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
