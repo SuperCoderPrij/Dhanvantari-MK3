@@ -4,7 +4,7 @@ import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Camera, Upload, Loader2 } from "lucide-react";
+import { Camera, Upload, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -42,6 +42,9 @@ export default function MedicineScan() {
         headers: { "Content-Type": selectedImage.type },
         body: selectedImage,
       });
+      
+      if (!uploadResult.ok) throw new Error("Upload failed");
+      
       const { storageId } = await uploadResult.json();
 
       // Simulate AI scanning (in production, this would call an AI service)
@@ -56,12 +59,10 @@ export default function MedicineScan() {
       };
 
       // Save scan to database
-      // Removed createScan call
-
       await recordScan({
           medicineId: undefined, // Or handle this if needed
-          scanResult: "genuine",
-          location: "Unknown",
+          scanResult: mockResult.isVerified ? "genuine" : "suspicious",
+          location: "Web Upload",
           deviceInfo: navigator.userAgent
       });
 
@@ -91,14 +92,14 @@ export default function MedicineScan() {
             <CardDescription>Select an image of the medicine packaging</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="border-2 border-dashed rounded-lg p-8 text-center">
+            <div className="border-2 border-dashed rounded-lg p-8 text-center min-h-[200px] flex flex-col items-center justify-center">
               {previewUrl ? (
                 <motion.img
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   src={previewUrl}
                   alt="Preview"
-                  className="max-h-64 mx-auto rounded"
+                  className="max-h-64 mx-auto rounded object-contain"
                 />
               ) : (
                 <div className="space-y-4">
@@ -109,7 +110,7 @@ export default function MedicineScan() {
             </div>
 
             <div className="flex gap-2">
-              <label className="flex-1">
+              <label className="flex-1 cursor-pointer">
                 <Input
                   type="file"
                   accept="image/*"
@@ -117,12 +118,10 @@ export default function MedicineScan() {
                   className="hidden"
                   id="image-upload"
                 />
-                <Button variant="outline" className="w-full" asChild>
-                  <span>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Choose Image
-                  </span>
-                </Button>
+                <div className="w-full h-10 px-4 py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Choose Image
+                </div>
               </label>
               <Button
                 onClick={handleScan}
@@ -159,12 +158,19 @@ export default function MedicineScan() {
               >
                 <div
                   className={`p-4 rounded-lg ${
-                    scanResult.isVerified ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"
+                    scanResult.isVerified ? "bg-green-500/10 border border-green-500/20" : "bg-red-500/10 border border-red-500/20"
                   }`}
                 >
-                  <p className="font-semibold">
-                    {scanResult.isVerified ? "✓ Verified Medicine" : "⚠ Unverified Medicine"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    {scanResult.isVerified ? (
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                    ) : (
+                        <XCircle className="h-5 w-5 text-red-500" />
+                    )}
+                    <p className={`font-semibold ${scanResult.isVerified ? "text-green-500" : "text-red-500"}`}>
+                        {scanResult.isVerified ? "Verified Medicine" : "Unverified Medicine"}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

@@ -15,60 +15,27 @@ const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Consumer Pages
-const ConsumerLayout = lazy(() => import("./pages/consumer/Layout.tsx"));
-const ConsumerDashboard = lazy(() => import("./pages/consumer/Dashboard.tsx"));
-const MedicineScan = lazy(() => import("./pages/consumer/MedicineScan.tsx"));
-const Medicines = lazy(() => import("./pages/consumer/Medicines.tsx"));
-const HealthRecords = lazy(() => import("./pages/consumer/HealthRecords.tsx"));
-const Prescriptions = lazy(() => import("./pages/consumer/Prescriptions.tsx"));
-const Alerts = lazy(() => import("./pages/consumer/Alerts.tsx"));
-const Settings = lazy(() => import("./pages/consumer/Settings.tsx"));
+const ConsumerLayout = lazy(() => import("./pages/consumer/Layout"));
+const ConsumerDashboard = lazy(() => import("./pages/consumer/Dashboard"));
+const MedicineScan = lazy(() => import("./pages/consumer/MedicineScan"));
+const Medicines = lazy(() => import("./pages/consumer/Medicines"));
+const HealthRecords = lazy(() => import("./pages/consumer/HealthRecords"));
+const Prescriptions = lazy(() => import("./pages/consumer/Prescriptions"));
+const Alerts = lazy(() => import("./pages/consumer/Alerts"));
+const Settings = lazy(() => import("./pages/consumer/Settings"));
 
 // Manufacturer Pages
->>>>>>> REPLACE
-<<<<<<< SEARCH
-                {/* Consumer Dashboard */}
-                <Route path="/dashboard" element={<ConsumerDashboard />}>
-                  {/* Note: The ConsumerDashboard component in the reference might handle its own sub-routes or be a single page. 
-                      Based on the file structure, it seems Dashboard.tsx is the main view. 
-                      If it has an Outlet, we add children. If not, we might need to adjust.
-                      The reference Dashboard.tsx seems to be a single page dashboard.
-                      However, the original project had sub-routes. 
-                      Let's keep the sub-routes for now as they were in the original project, 
-                      but we might need to check if ConsumerDashboard renders an Outlet.
-                      Looking at the read file, ConsumerDashboard.tsx does NOT seem to have an Outlet.
-                      It seems to be a standalone dashboard page.
-                      The other pages (Medicines, HealthRecords) are separate.
-                  */}
-                </Route>
-                <Route path="/dashboard/scan" element={<MedicineScan />} />
-                <Route path="/dashboard/medicines" element={<Medicines />} />
-                <Route path="/dashboard/records" element={<HealthRecords />} />
-                <Route path="/dashboard/prescriptions" element={<Prescriptions />} />
-                <Route path="/dashboard/alerts" element={<Alerts />} />
-                <Route path="/dashboard/settings" element={<Settings />} />
-=======
-                {/* Consumer Dashboard */}
-                <Route path="/dashboard" element={<ConsumerLayout />}>
-                  <Route index element={<ConsumerDashboard />} />
-                  <Route path="scan" element={<MedicineScan />} />
-                  <Route path="medicines" element={<Medicines />} />
-                  <Route path="records" element={<HealthRecords />} />
-                  <Route path="prescriptions" element={<Prescriptions />} />
-                  <Route path="alerts" element={<Alerts />} />
-                  <Route path="settings" element={<Settings />} />
-                </Route>
-const ManufacturerLayout = lazy(() => import("./pages/manufacturer/ManufacturerLayout.tsx"));
-const ManufacturerDashboard = lazy(() => import("./pages/manufacturer/Dashboard.tsx"));
-const ManufacturerMedicines = lazy(() => import("./pages/manufacturer/Medicines.tsx"));
-const CreateMedicine = lazy(() => import("./pages/manufacturer/CreateMedicine.tsx"));
-const GenerateQR = lazy(() => import("./pages/manufacturer/GenerateQR.tsx"));
-const ManufacturerReports = lazy(() => import("./pages/manufacturer/Reports.tsx"));
+const ManufacturerLayout = lazy(() => import("./pages/manufacturer/ManufacturerLayout"));
+const ManufacturerDashboard = lazy(() => import("./pages/manufacturer/Dashboard"));
+const ManufacturerMedicines = lazy(() => import("./pages/manufacturer/Medicines"));
+const CreateMedicine = lazy(() => import("./pages/manufacturer/CreateMedicine"));
+const GenerateQR = lazy(() => import("./pages/manufacturer/GenerateQR"));
+const ManufacturerReports = lazy(() => import("./pages/manufacturer/Reports"));
 
 // Public Pages
-const Verify = lazy(() => import("./pages/Verify.tsx"));
-const NotVerified = lazy(() => import("./pages/NotVerified.tsx"));
-const Reports = lazy(() => import("./pages/Reports.tsx"));
+const Verify = lazy(() => import("./pages/Verify"));
+const NotVerified = lazy(() => import("./pages/NotVerified"));
+const Reports = lazy(() => import("./pages/Reports"));
 
 function RouteLoading() {
   return (
@@ -98,25 +65,15 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/reports" element={<Reports />} />
 
                 {/* Consumer Dashboard */}
-                <Route path="/dashboard" element={<ConsumerDashboard />}>
-                  {/* Note: The ConsumerDashboard component in the reference might handle its own sub-routes or be a single page. 
-                      Based on the file structure, it seems Dashboard.tsx is the main view. 
-                      If it has an Outlet, we add children. If not, we might need to adjust.
-                      The reference Dashboard.tsx seems to be a single page dashboard.
-                      However, the original project had sub-routes. 
-                      Let's keep the sub-routes for now as they were in the original project, 
-                      but we might need to check if ConsumerDashboard renders an Outlet.
-                      Looking at the read file, ConsumerDashboard.tsx does NOT seem to have an Outlet.
-                      It seems to be a standalone dashboard page.
-                      The other pages (Medicines, HealthRecords) are separate.
-                  */}
+                <Route path="/dashboard" element={<ConsumerLayout />}>
+                  <Route index element={<ConsumerDashboard />} />
+                  <Route path="scan" element={<MedicineScan />} />
+                  <Route path="medicines" element={<Medicines />} />
+                  <Route path="records" element={<HealthRecords />} />
+                  <Route path="prescriptions" element={<Prescriptions />} />
+                  <Route path="alerts" element={<Alerts />} />
+                  <Route path="settings" element={<Settings />} />
                 </Route>
-                <Route path="/dashboard/scan" element={<MedicineScan />} />
-                <Route path="/dashboard/medicines" element={<Medicines />} />
-                <Route path="/dashboard/records" element={<HealthRecords />} />
-                <Route path="/dashboard/prescriptions" element={<Prescriptions />} />
-                <Route path="/dashboard/alerts" element={<Alerts />} />
-                <Route path="/dashboard/settings" element={<Settings />} />
 
                 {/* Manufacturer Portal */}
                 <Route path="/manufacturer" element={<ManufacturerLayout />}>
