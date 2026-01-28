@@ -49,7 +49,7 @@ export default function ManufacturerLayout() {
               className="h-8 w-8 rounded-full" 
             />
             <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              Manufacturer
+              Dhanvantari
             </span>
           </div>
         </div>
