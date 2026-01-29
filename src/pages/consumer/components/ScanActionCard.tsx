@@ -22,7 +22,6 @@ export function ScanActionCard() {
   const recordScan = useMutation(api.scans.recordScan);
   const askGemini = useAction(api.gemini.askAboutMedicine);
   
-  // This query runs automatically when manualCode changes
   const getMedicineByQR = useQuery(api.medicines.getMedicineByQRCode, 
     manualCode ? { qrCodeData: manualCode } : "skip"
   );
@@ -61,17 +60,12 @@ export function ScanActionCard() {
 
     setIsScanning(true);
     
-    // Wait a brief moment to ensure query has a chance to update if user just typed
-    // In a real app, we might want to use a mutation for verification to avoid this
     await new Promise(resolve => setTimeout(resolve, 500));
 
     try {
-      // Check if query is still loading (undefined)
       if (getMedicineByQR === undefined && manualCode) {
-         // If still loading after delay, wait a bit more or show loading
-         // For now, we'll assume if it's undefined it's fetching
          toast.info("Verifying...");
-         return; // The effect or next click will catch it, or we could poll
+         return; 
       }
 
       if (getMedicineByQR) {
@@ -85,12 +79,10 @@ export function ScanActionCard() {
         setAiResponse(null);
         toast.success("Medicine Verified: Genuine");
       } else {
-        // If explicitly null, it means not found
         if (getMedicineByQR === null) {
              setScanResult({ status: "unknown" });
              toast.warning("Medicine not found in registry");
              
-             // Record the failed scan
              await recordScan({
                 scanResult: "counterfeit",
                 location: "Web Dashboard",
@@ -131,26 +123,28 @@ export function ScanActionCard() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.1 }}
     >
-      <Card className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border-cyan-500/30 backdrop-blur-xl overflow-hidden">
-        <CardContent className="p-6 text-center space-y-6">
-          <div className="h-32 w-32 mx-auto bg-cyan-500/20 rounded-full flex items-center justify-center relative">
-            <div className="absolute inset-0 rounded-full border-2 border-cyan-500/50 animate-ping" />
-            <QrCode className="h-16 w-16 text-cyan-400" />
+      <Card className="bg-[#0f172a] border-slate-800 shadow-xl overflow-hidden relative group">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <CardContent className="p-8 text-center space-y-8 relative z-10">
+          <div className="h-32 w-32 mx-auto rounded-full flex items-center justify-center relative bg-slate-900 border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
+            <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-[ping_3s_ease-in-out_infinite]" />
+            <QrCode className="h-14 w-14 text-cyan-400" />
           </div>
           
           <div className="space-y-2">
-            <h2 className="text-xl font-bold text-white">Scan Medicine</h2>
-            <p className="text-sm text-gray-400">Point your camera at the QR code on the medicine pack</p>
+            <h2 className="text-2xl font-bold text-white">Scan Medicine</h2>
+            <p className="text-slate-400 text-sm">Point your camera at the QR code on the medicine pack</p>
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white py-6 text-lg shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+              <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white py-6 text-lg font-medium shadow-lg shadow-cyan-500/20 border-0 transition-all duration-300 hover:scale-[1.02]">
                 <Camera className="mr-2 h-5 w-5" />
                 Scan Now
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800 text-white sm:max-w-md">
+            <DialogContent className="bg-slate-950 border-slate-800 text-white sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>Scan Medicine QR</DialogTitle>
               </DialogHeader>
@@ -168,12 +162,16 @@ export function ScanActionCard() {
                       value={manualCode}
                       onChange={(e) => setManualCode(e.target.value)}
                       placeholder='e.g. {"id":"NFT-..."} or Batch ID'
-                      className="bg-slate-950 border-slate-800"
+                      className="bg-slate-900 border-slate-800 text-white placeholder:text-slate-600"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") handleManualVerify();
                       }}
                     />
-                    <Button onClick={handleManualVerify} disabled={isScanning || getMedicineByQR === undefined}>
+                    <Button 
+                      onClick={handleManualVerify} 
+                      disabled={isScanning || getMedicineByQR === undefined}
+                      className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                    >
                       {isScanning ? "Verifying..." : "Verify"}
                     </Button>
                   </div>

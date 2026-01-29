@@ -39,7 +39,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
@@ -61,7 +61,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="dark">
       <div className="flex min-h-screen w-full bg-slate-950 text-white">
         <Sidebar className="border-r border-slate-800 bg-slate-900 text-white">
           <SidebarHeader className="border-b border-slate-800 p-4">
@@ -70,7 +70,7 @@ export default function Dashboard() {
               <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">Dhanvantari</span>
             </div>
           </SidebarHeader>
-          <SidebarContent>
+          <SidebarContent className="bg-slate-900">
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
@@ -86,7 +86,7 @@ export default function Dashboard() {
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="border-t border-slate-800 p-4">
+          <SidebarFooter className="border-t border-slate-800 p-4 bg-slate-900">
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-400 hover:text-white hover:bg-slate-800"
@@ -98,12 +98,12 @@ export default function Dashboard() {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="flex-1 bg-slate-950">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6">
+        <SidebarInset className="flex-1 bg-slate-950 overflow-hidden">
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 md:hidden">
             <SidebarTrigger className="text-white hover:bg-slate-800" />
             <div className="flex-1" />
           </header>
-          <main className="p-6">
+          <main className="flex-1 bg-slate-950 min-h-screen">
             <Outlet />
           </main>
         </SidebarInset>
