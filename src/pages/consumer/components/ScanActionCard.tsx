@@ -39,8 +39,8 @@ export function ScanActionCard() {
       // Not JSON
     }
 
-    if (!isValidUrl && !isValidJson) {
-      toast.error("Invalid QR Code. Please scan a valid Dhanvantari medicine QR code.");
+    if (!isValidUrl && !isValidJson && !decodedText.startsWith("NFT-")) {
+      toast.error("Invalid QR Code format. Please scan a valid Dhanvantari medicine QR code.");
       return;
     }
     
@@ -50,29 +50,30 @@ export function ScanActionCard() {
     }
 
     setManualCode(decodedText);
-    // Trigger verification logic after setting code
-    // Note: In a real scenario, we might want to wait for the query to update
-    // For now, we'll let the user click verify or handle it via effect if needed
-    // But to be snappy, we can try to simulate the scan immediately if we trust the query will be fast or if we just want to show the dialog state
-    
-    // For this component, let's just set the code and let the user click verify or auto-trigger if we want
-    // To keep it simple and consistent with previous logic:
-    // For this component, let's just set the code and let the user click verify or auto-trigger if we want
-    // To keep it simple and consistent with previous logic:
     toast.success("QR Code Scanned! Click Verify to confirm.");
   };
 
-  const handleSimulateScan = async () => {
-    setIsScanning(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+  const handleManualVerify = async () => {
     if (!manualCode) {
       toast.error("Please enter a QR code or Batch ID");
-      setIsScanning(false);
       return;
     }
 
+    setIsScanning(true);
+    
+    // Wait a brief moment to ensure query has a chance to update if user just typed
+    // In a real app, we might want to use a mutation for verification to avoid this
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     try {
+      // Check if query is still loading (undefined)
+      if (getMedicineByQR === undefined && manualCode) {
+         // If still loading after delay, wait a bit more or show loading
+         // For now, we'll assume if it's undefined it's fetching
+         toast.info("Verifying...");
+         return; // The effect or next click will catch it, or we could poll
+      }
+
       if (getMedicineByQR) {
         await recordScan({
           medicineId: getMedicineByQR._id,
@@ -84,9 +85,17 @@ export function ScanActionCard() {
         setAiResponse(null);
         toast.success("Medicine Verified: Genuine");
       } else {
+        // If explicitly null, it means not found
         if (getMedicineByQR === null) {
              setScanResult({ status: "unknown" });
              toast.warning("Medicine not found in registry");
+             
+             // Record the failed scan
+             await recordScan({
+                scanResult: "counterfeit",
+                location: "Web Dashboard",
+                deviceInfo: navigator.userAgent,
+             });
         }
       }
     } catch (error) {
@@ -158,10 +167,13 @@ export function ScanActionCard() {
                     <Input 
                       value={manualCode}
                       onChange={(e) => setManualCode(e.target.value)}
-                      placeholder='e.g. {"id":"NFT-..."}'
+                      placeholder='e.g. {"id":"NFT-..."} or Batch ID'
                       className="bg-slate-950 border-slate-800"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleManualVerify();
+                      }}
                     />
-                    <Button onClick={handleSimulateScan} disabled={isScanning}>
+                    <Button onClick={handleManualVerify} disabled={isScanning || getMedicineByQR === undefined}>
                       {isScanning ? "Verifying..." : "Verify"}
                     </Button>
                   </div>

@@ -101,7 +101,11 @@ export default function MedicineScan() {
       return;
     }
     setIsProcessing(true);
-    // Trigger query update which triggers effect
+    // The effect hook will handle the verification once medicineQuery updates
+    // We can force a check if the query is already loaded
+    if (medicineQuery !== undefined) {
+        verifyMedicine(medicineQuery);
+    }
   };
 
   const handleAskGemini = async () => {
