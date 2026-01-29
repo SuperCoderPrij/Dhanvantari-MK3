@@ -14,7 +14,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight font-byte">
+          <h1 className="text-5xl md:text-7xl font-medium mb-6 leading-tight font-byte">
             <span 
               className="glitch-text text-white relative z-10" 
               data-text="Stop Counterfeit"
