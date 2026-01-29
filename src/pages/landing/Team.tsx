@@ -34,6 +34,15 @@ const teamMembers = [
       github: "https://github.com/Palak-singh26",
       linkedin: "https://www.linkedin.com/in/palak-singh-b2a532322/"
     }
+  },
+  {
+    name: "Soniya Singh",
+    role: "Secure Coder & Frontend Developer",
+    image: "https://harmless-tapir-303.convex.cloud/api/storage/226e2b36-78dc-4422-9e41-a487910572d7",
+    bio: "Specializing in secure coding practices and building responsive, user-friendly frontend interfaces.",
+    social: {
+      linkedin: "https://www.linkedin.com/in/soniya-singh-712779306/"
+    }
   }
 ];
 
@@ -57,7 +66,7 @@ export function Team() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-center">
           {teamMembers.map((member, index) => (
             <motion.div
               key={index}
@@ -65,7 +74,6 @@ export function Team() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="lg:col-start-2"
             >
               <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm overflow-hidden hover:border-cyan-500/30 transition-all duration-300 group h-full">
                 <CardContent className="p-0 h-full flex flex-col">
