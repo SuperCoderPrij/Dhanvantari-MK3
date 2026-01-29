@@ -74,7 +74,7 @@ export const recordScan = mutation({
       scanDate: Date.now(),
       location: args.location,
       deviceInfo: args.deviceInfo,
-      imageStorageId: args.imageStorageId || ("" as any), // Handle optional storage
+      imageStorageId: args.imageStorageId,
     });
 
     return scanId;

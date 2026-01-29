@@ -99,7 +99,7 @@ const schema = defineSchema(
       medicineId: v.optional(v.id("medicines")),
       unitId: v.optional(v.id("medicine_units")), // Link to specific unit
       userId: v.optional(v.id("users")),
-      imageStorageId: v.id("_storage"),
+      imageStorageId: v.optional(v.id("_storage")),
       scanResult: v.object({
         medicineName: v.optional(v.string()),
         confidence: v.number(),
