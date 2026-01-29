@@ -10,9 +10,9 @@ import "./index.css";
 import "./types/global.d.ts";
 
 // Lazy load route components
-const Landing = lazy(() => import("./pages/Landing.tsx"));
-const AuthPage = lazy(() => import("./pages/Auth.tsx"));
-const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const Landing = lazy(() => import("./pages/Landing"));
+const AuthPage = lazy(() => import("./pages/Auth"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Consumer Pages
 const ConsumerLayout = lazy(() => import("./pages/consumer/Layout"));
