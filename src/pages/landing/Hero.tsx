@@ -55,7 +55,7 @@ export function Hero() {
               }}
               size="lg"
               variant="outline"
-              className="bg-slate-900/80 backdrop-blur-sm border-2 border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-300 text-lg px-8 py-6 cursor-pointer"
+              className="bg-slate-950 hover:bg-slate-900 border-2 border-cyan-400/50 text-cyan-400 hover:border-cyan-400 transition-all duration-300 text-lg px-8 py-6 cursor-pointer"
             >
               <Lock className="mr-2 h-5 w-5" />
               Manufacturer Portal

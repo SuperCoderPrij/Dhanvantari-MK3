@@ -18,11 +18,6 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const ConsumerLayout = lazy(() => import("./pages/consumer/Layout"));
 const ConsumerDashboard = lazy(() => import("./pages/consumer/Dashboard"));
 const MedicineScan = lazy(() => import("./pages/consumer/MedicineScan"));
-const Medicines = lazy(() => import("./pages/consumer/Medicines"));
-const HealthRecords = lazy(() => import("./pages/consumer/HealthRecords"));
-const Prescriptions = lazy(() => import("./pages/consumer/Prescriptions"));
-const Alerts = lazy(() => import("./pages/consumer/Alerts"));
-const Settings = lazy(() => import("./pages/consumer/Settings"));
 const ScanHistory = lazy(() => import("./pages/consumer/ScanHistory"));
 
 // Manufacturer Pages
