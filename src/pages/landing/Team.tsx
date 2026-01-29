@@ -5,22 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 // Placeholder data - to be updated with user provided info
 const teamMembers = [
   {
-    name: "Team Member 1",
-    role: "Role Title",
-    image: "https://github.com/shadcn.png",
-    bio: "Passionate about blockchain and healthcare innovation."
-  },
-  {
-    name: "Team Member 2",
-    role: "Role Title",
-    image: "https://github.com/shadcn.png",
-    bio: "Expert in AI and secure systems architecture."
-  },
-  {
-    name: "Team Member 3",
-    role: "Role Title",
-    image: "https://github.com/shadcn.png",
-    bio: "Dedicated to ensuring medicine safety for everyone."
+    name: "Priyanshu Jash",
+    role: "Backend & Blockchain Developer",
+    image: "https://harmless-tapir-303.convex.cloud/api/storage/34b82f69-01c6-4564-9514-d17ada167d56",
+    bio: "Architecting the secure blockchain infrastructure and backend systems that power Dhanvantari's anti-counterfeit solution.",
+    social: {
+      github: "https://github.com/SuperCoderPrij",
+      linkedin: "https://www.linkedin.com/in/priyanshu-jash-4602b9247/",
+      twitter: "https://x.com/JPriyanshuTalks"
+    }
   }
 ];
 
@@ -44,7 +37,7 @@ export function Team() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
           {teamMembers.map((member, index) => (
             <motion.div
               key={index}
@@ -52,34 +45,41 @@ export function Team() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
+              className="lg:col-start-2"
             >
-              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm overflow-hidden hover:border-cyan-500/30 transition-all duration-300 group">
-                <CardContent className="p-0">
-                  <div className="relative overflow-hidden aspect-square">
+              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm overflow-hidden hover:border-cyan-500/30 transition-all duration-300 group h-full">
+                <CardContent className="p-0 h-full flex flex-col">
+                  <div className="relative overflow-hidden aspect-[3/4]">
                     <img 
                       src={member.image} 
                       alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 object-top"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90" />
                     
                     <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
                       <p className="text-cyan-400 font-medium mb-3">{member.role}</p>
-                      <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                      <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
                         {member.bio}
                       </p>
                       
-                      <div className="flex gap-4 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                        <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                          <Linkedin className="h-5 w-5" />
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                          <Twitter className="h-5 w-5" />
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                          <Github className="h-5 w-5" />
-                        </a>
+                      <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
+                        {member.social.linkedin && (
+                          <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors">
+                            <Linkedin className="h-5 w-5" />
+                          </a>
+                        )}
+                        {member.social.twitter && (
+                          <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-sky-400 transition-colors">
+                            <Twitter className="h-5 w-5" />
+                          </a>
+                        )}
+                        {member.social.github && (
+                          <a href={member.social.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                            <Github className="h-5 w-5" />
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
