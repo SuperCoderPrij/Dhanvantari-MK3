@@ -70,11 +70,6 @@ createRoot(document.getElementById("root")!).render(
                   <Route index element={<ConsumerDashboard />} />
                   <Route path="scan" element={<MedicineScan />} />
                   <Route path="history" element={<ScanHistory />} />
-                  <Route path="medicines" element={<Medicines />} />
-                  <Route path="records" element={<HealthRecords />} />
-                  <Route path="prescriptions" element={<Prescriptions />} />
-                  <Route path="alerts" element={<Alerts />} />
-                  <Route path="settings" element={<Settings />} />
                 </Route>
 
                 {/* Manufacturer Portal */}
