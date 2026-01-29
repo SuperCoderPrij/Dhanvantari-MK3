@@ -5,6 +5,7 @@ import { HowItWorks } from "./landing/HowItWorks";
 import { UserGuide } from "./landing/UserGuide";
 import { CTA } from "./landing/CTA";
 import { ReportForm } from "./landing/ReportForm";
+import { Location } from "./landing/Location";
 import { Footer } from "./landing/Footer";
 
 export default function Landing() {
@@ -77,6 +78,7 @@ export default function Landing() {
       <UserGuide />
       <CTA />
       <ReportForm />
+      <Location />
       <Footer />
     </div>
   );
