@@ -17,7 +17,7 @@ export const getUserScanHistory = query({
     const user = await ctx.db
       .query("users")
       .withIndex("email", (q) => q.eq("email", identity.email!))
-      .unique();
+      .first();
 
     if (!user) return [];
 
@@ -59,7 +59,7 @@ export const recordScan = mutation({
       const user = await ctx.db
         .query("users")
         .withIndex("email", (q) => q.eq("email", identity.email!))
-        .unique();
+        .first();
       userId = user?._id;
     }
 
