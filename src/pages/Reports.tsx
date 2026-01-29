@@ -17,27 +17,15 @@ export default function Reports() {
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] pointer-events-none z-0" />
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="flex items-center justify-between mb-8">
-          <div 
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img 
-              src="https://harmless-tapir-303.convex.cloud/api/storage/6fe7d1e8-1ae1-4599-8bb9-5c6b39e1af03" 
-              alt="Logo" 
-              className="h-10 w-10 object-cover rounded-full" 
-            />
-            <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">
-              Dhanvantari
-            </span>
-          </div>
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate("/")}
-            className="text-gray-400 hover:text-white"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-          </Button>
+        <div className="flex items-center gap-2 mb-8">
+          <img 
+            src="https://harmless-tapir-303.convex.cloud/api/storage/6fe7d1e8-1ae1-4599-8bb9-5c6b39e1af03" 
+            alt="Logo" 
+            className="h-8 w-8 rounded-full" 
+          />
+          <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">
+            Dhanvantari
+          </span>
         </div>
 
         <motion.div

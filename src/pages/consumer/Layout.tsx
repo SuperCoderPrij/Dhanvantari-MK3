@@ -65,7 +65,7 @@ export default function Dashboard() {
           <SidebarHeader className="border-b p-4">
             <div className="flex items-center gap-2">
               <img src="/logo.svg" alt="Dhanvantari" className="h-8 w-8" />
-              <span className="font-semibold text-lg">Dhanvantari</span>
+              <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">Dhanvantari</span>
             </div>
           </SidebarHeader>
           <SidebarContent>

@@ -177,19 +177,16 @@ export default function Verify() {
         className="relative z-10 w-full max-w-2xl"
       >
         <div className="text-center mb-8">
-          <div 
-            className="inline-flex items-center justify-center mb-4 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => navigate("/")}
-          >
+          <div className="flex items-center justify-center gap-3 mb-8">
             <img 
               src="https://harmless-tapir-303.convex.cloud/api/storage/6fe7d1e8-1ae1-4599-8bb9-5c6b39e1af03" 
               alt="Dhanvantari Logo" 
-              className="h-20 w-20 object-cover rounded-full bg-cyan-500/10" 
+              className="h-12 w-12 rounded-full" 
             />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">
+              Dhanvantari Verification
+            </h1>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wider">
-            Dhanvantari Verification
-          </h1>
         </div>
 
         <Card className="bg-slate-900/80 backdrop-blur-xl border border-cyan-500/20 shadow-2xl">

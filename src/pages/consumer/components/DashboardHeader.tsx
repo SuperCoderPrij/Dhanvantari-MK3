@@ -7,14 +7,11 @@ export function DashboardHeader() {
   
   return (
     <header className="flex items-center justify-between py-4">
-      <div 
-        className="flex items-center gap-2 cursor-pointer"
-        onClick={() => navigate("/")}
-      >
+      <div className="flex items-center gap-2">
         <img 
           src="https://harmless-tapir-303.convex.cloud/api/storage/6fe7d1e8-1ae1-4599-8bb9-5c6b39e1af03" 
           alt="Logo" 
-          className="h-8 w-8 object-cover rounded-full" 
+          className="h-8 w-8 rounded-full" 
         />
         <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">
           Dhanvantari
