@@ -24,6 +24,16 @@ const teamMembers = [
       github: "https://github.com/bestfriends3243",
       linkedin: "https://www.linkedin.com/in/neha-yadav-8bb6212ba/"
     }
+  },
+  {
+    name: "Palak Singh",
+    role: "Fullstack Developer",
+    image: "https://harmless-tapir-303.convex.cloud/api/storage/2fd78898-f068-4570-9f89-97d5ce96abcc",
+    bio: "Building robust and scalable full-stack applications to power the Dhanvantari ecosystem.",
+    social: {
+      github: "https://github.com/Palak-singh26",
+      linkedin: "https://www.linkedin.com/in/palak-singh-b2a532322/"
+    }
   }
 ];
 
