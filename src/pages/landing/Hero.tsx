@@ -15,11 +15,19 @@ export function Hero() {
           transition={{ duration: 0.8 }}
         >
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span 
+              className="glitch-text text-white relative z-10" 
+              data-text="Stop Counterfeit"
+            >
               Stop Counterfeit
             </span>
             <br />
-            <span className="text-white">Medicines with Blockchain</span>
+            <span 
+              className="glitch-text text-white relative z-10"
+              data-text="Medicines with Blockchain"
+            >
+              Medicines with Blockchain
+            </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
