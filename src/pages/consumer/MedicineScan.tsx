@@ -1,204 +1,239 @@
-import { useState } from "react";
-import { useMutation } from "convex/react";
+import { useState, lazy, Suspense } from "react";
+import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Camera, Upload, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, AlertTriangle, Sparkles, Bot } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+const QRScanner = lazy(() => import("@/components/QRScanner"));
+
 export default function MedicineScan() {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [manualCode, setManualCode] = useState("");
   const [scanResult, setScanResult] = useState<any>(null);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isAskingAi, setIsAskingAi] = useState(false);
 
-  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const recordScan = useMutation(api.scans.recordScan);
+  const askGemini = useAction(api.gemini.askAboutMedicine);
+  const getMedicineByQR = useQuery(api.medicines.getMedicineByQRCode, 
+    manualCode ? { qrCodeData: manualCode } : "skip"
+  );
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setScanResult(null);
+  const handleScanSuccess = async (decodedText: string) => {
+    console.log("Scanned:", decodedText);
+    
+    const isValidUrl = decodedText.includes("/verify?");
+    let isValidJson = false;
+    try {
+      const parsed = JSON.parse(decodedText);
+      if (parsed.id || parsed.batch || parsed.contract) isValidJson = true;
+    } catch (e) {
+      // Not JSON
     }
+
+    if (!isValidUrl && !isValidJson) {
+      toast.error("Invalid QR Code. Please scan a valid Dhanvantari medicine QR code.");
+      return;
+    }
+    
+    if (decodedText.includes("/verify?")) {
+      window.location.href = decodedText;
+      return;
+    }
+
+    setManualCode(decodedText);
+    toast.success("QR Code Scanned! Verifying...");
+    handleSimulateScan(decodedText);
   };
 
-  const handleScan = async () => {
-    if (!selectedImage) {
-      toast.error("Please select an image first");
+  const handleSimulateScan = async (codeOverride?: string) => {
+    const code = codeOverride || manualCode;
+    if (!code) {
+      toast.error("Please enter a QR code or Batch ID");
       return;
     }
 
     setIsScanning(true);
+    // Small delay to allow query to update if it was just set
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     try {
-      // Upload image to Convex storage
-      const uploadUrl = await generateUploadUrl();
-      const uploadResult = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": selectedImage.type },
-        body: selectedImage,
-      });
-      
-      if (!uploadResult.ok) throw new Error("Upload failed");
-      
-      const { storageId } = await uploadResult.json();
-
-      // Simulate AI scanning (in production, this would call an AI service)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Mock scan result
-      const mockResult = {
-        medicineName: "Sample Medicine",
-        confidence: 0.85,
-        detectedText: "Sample text from image",
-        isVerified: Math.random() > 0.3,
-      };
-
-      // Save scan to database
-      await recordScan({
-          medicineId: undefined, // Or handle this if needed
-          scanResult: mockResult.isVerified ? "genuine" : "suspicious",
-          location: "Web Upload",
-          deviceInfo: navigator.userAgent
-      });
-
-      setScanResult(mockResult);
-      toast.success("Scan completed successfully!");
+      if (getMedicineByQR) {
+        await recordScan({
+          medicineId: getMedicineByQR._id,
+          scanResult: "genuine",
+          location: "Web Scanner",
+          deviceInfo: navigator.userAgent,
+        });
+        setScanResult({ status: "genuine", medicine: getMedicineByQR });
+        setAiResponse(null);
+        toast.success("Medicine Verified: Genuine");
+      } else {
+        if (getMedicineByQR === null) {
+             setScanResult({ status: "unknown" });
+             toast.warning("Medicine not found in registry");
+        }
+      }
     } catch (error) {
-      console.error("Scan error:", error);
-      toast.error("Failed to scan medicine");
+      console.error(error);
+      toast.error("Error processing scan");
     } finally {
       setIsScanning(false);
     }
   };
 
+  const handleAskGemini = async () => {
+    if (!scanResult?.medicine) return;
+    
+    setIsAskingAi(true);
+    try {
+      const response = await askGemini({
+        medicineName: scanResult.medicine.medicineName,
+        manufacturer: scanResult.medicine.manufacturerName,
+        details: `Batch: ${scanResult.medicine.batchNumber}`
+      });
+      setAiResponse(response);
+    } catch (error) {
+      toast.error("Failed to get AI insights");
+      console.error(error);
+    } finally {
+      setIsAskingAi(false);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
+    <div className="max-w-2xl mx-auto space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <h1 className="text-3xl font-bold">Scan Medicine</h1>
         <p className="text-muted-foreground mt-2">
-          Upload or capture an image of medicine packaging to verify authenticity
+          Scan the QR code on the medicine packaging to verify authenticity
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Image</CardTitle>
-            <CardDescription>Select an image of the medicine packaging</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="border-2 border-dashed rounded-lg p-8 text-center min-h-[200px] flex flex-col items-center justify-center">
-              {previewUrl ? (
-                <motion.img
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  src={previewUrl}
-                  alt="Preview"
-                  className="max-h-64 mx-auto rounded object-contain"
+      <Card className="bg-slate-900/50 border-slate-800">
+        <CardContent className="p-6 space-y-6">
+          <div className="rounded-lg overflow-hidden border border-slate-800 bg-black aspect-square max-w-sm mx-auto relative">
+             <Suspense fallback={<div className="flex items-center justify-center h-full text-gray-500">Loading Camera...</div>}>
+                <QRScanner 
+                  onScanSuccess={handleScanSuccess} 
+                  onScanFailure={(err: any) => {}}
                 />
-              ) : (
-                <div className="space-y-4">
-                  <Camera className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="text-muted-foreground">No image selected</p>
-                </div>
-              )}
-            </div>
+             </Suspense>
+          </div>
 
+          <div className="space-y-2">
+            <p className="text-sm text-gray-400 text-center">Or enter QR Data / Batch ID manually:</p>
             <div className="flex gap-2">
-              <label className="flex-1 cursor-pointer">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSelect}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <div className="w-full h-10 px-4 py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose Image
-                </div>
-              </label>
-              <Button
-                onClick={handleScan}
-                disabled={!selectedImage || isScanning}
-                className="flex-1"
-              >
-                {isScanning ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Scanning...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="h-4 w-4 mr-2" />
-                    Scan
-                  </>
-                )}
+              <Input 
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value)}
+                placeholder='e.g. {"id":"NFT-..."}'
+                className="bg-slate-950 border-slate-800"
+              />
+              <Button onClick={() => handleSimulateScan()} disabled={isScanning}>
+                {isScanning ? "Verifying..." : "Verify"}
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Scan Results</CardTitle>
-            <CardDescription>Verification details and medicine information</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {scanResult ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-4"
-              >
-                <div
-                  className={`p-4 rounded-lg ${
-                    scanResult.isVerified ? "bg-green-500/10 border border-green-500/20" : "bg-red-500/10 border border-red-500/20"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {scanResult.isVerified ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                    ) : (
-                        <XCircle className="h-5 w-5 text-red-500" />
-                    )}
-                    <p className={`font-semibold ${scanResult.isVerified ? "text-green-500" : "text-red-500"}`}>
-                        {scanResult.isVerified ? "Verified Medicine" : "Unverified Medicine"}
+      {/* Results Section */}
+      {scanResult && (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`p-6 rounded-xl border ${
+            scanResult.status === "genuine" 
+                ? "bg-green-500/10 border-green-500/30" 
+                : "bg-red-500/10 border-red-500/30"
+            }`}
+        >
+            <div className="flex items-center gap-3 mb-4">
+                {scanResult.status === "genuine" ? (
+                <CheckCircle className="h-8 w-8 text-green-400" />
+                ) : (
+                <AlertTriangle className="h-8 w-8 text-red-400" />
+                )}
+                <div>
+                    <h3 className="font-bold text-xl capitalize">
+                        {scanResult.status === "genuine" ? "Authentic Medicine" : "Verification Failed"}
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                        {scanResult.status === "genuine" 
+                            ? "This medicine has been verified on the blockchain." 
+                            : "We could not verify this medicine in our registry."}
                     </p>
-                  </div>
                 </div>
+            </div>
 
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Medicine Name</p>
-                    <p className="font-medium">{scanResult.medicineName}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Confidence</p>
-                    <p className="font-medium">{(scanResult.confidence * 100).toFixed(1)}%</p>
-                  </div>
-                  {scanResult.detectedText && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">Detected Text</p>
-                      <p className="font-medium text-sm">{scanResult.detectedText}</p>
+            {scanResult.medicine && (
+                <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+                            <p className="text-gray-500 mb-1">Medicine Name</p>
+                            <p className="font-medium text-white">{scanResult.medicine.medicineName}</p>
+                        </div>
+                        <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+                            <p className="text-gray-500 mb-1">Manufacturer</p>
+                            <p className="font-medium text-white">{scanResult.medicine.manufacturerName}</p>
+                        </div>
+                        <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+                            <p className="text-gray-500 mb-1">Batch Number</p>
+                            <p className="font-medium text-white">{scanResult.medicine.batchNumber}</p>
+                        </div>
+                        <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+                            <p className="text-gray-500 mb-1">Expiry Date</p>
+                            <p className="font-medium text-white">{scanResult.medicine.expiryDate}</p>
+                        </div>
                     </div>
-                  )}
+
+                    {!aiResponse && (
+                        <Button 
+                        onClick={handleAskGemini} 
+                        disabled={isAskingAi}
+                        className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0"
+                        >
+                        {isAskingAi ? (
+                            <>
+                            <Sparkles className="mr-2 h-4 w-4 animate-spin" />
+                            Asking Gemini...
+                            </>
+                        ) : (
+                            <>
+                            <Bot className="mr-2 h-4 w-4" />
+                            Ask Gemini AI
+                            </>
+                        )}
+                        </Button>
+                    )}
+
+                    {aiResponse && (
+                        <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="pt-4 border-t border-slate-700/50"
+                        >
+                        <div className="flex items-center gap-2 mb-2 text-purple-300">
+                            <Sparkles className="h-4 w-4" />
+                            <span className="font-semibold text-sm">Gemini AI Insights</span>
+                        </div>
+                        <div className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed bg-slate-950/50 p-4 rounded-lg border border-purple-500/20">
+                            {aiResponse}
+                        </div>
+                        </motion.div>
+                    )}
                 </div>
-              </motion.div>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Scan results will appear here</p>
-              </div>
             )}
-          </CardContent>
-        </Card>
-      </div>
+        </motion.div>
+      )}
     </div>
   );
 }
