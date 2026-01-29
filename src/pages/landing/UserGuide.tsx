@@ -69,7 +69,7 @@ export function UserGuide() {
                   <p className="text-gray-400 mb-4">
                     Dhanvantari uses the Polygon blockchain. You need a Web3 wallet like MetaMask to interact with it.
                   </p>
-                  <Button variant="outline" className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10" onClick={() => window.open("https://metamask.io/download/", "_blank")}>
+                  <Button variant="outline" className="bg-slate-950 hover:bg-slate-900 border-cyan-500/50 text-cyan-400 hover:border-cyan-400 transition-all duration-300" onClick={() => window.open("https://metamask.io/download/", "_blank")}>
                     Download MetaMask <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
