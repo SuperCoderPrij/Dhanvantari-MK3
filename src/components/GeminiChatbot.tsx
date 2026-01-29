@@ -53,18 +53,36 @@ export function GeminiChatbot() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const text = await response.text();
+      if (!text) {
+        throw new Error("Empty response from n8n. Please add a 'Respond to Webhook' node.");
+      }
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Invalid JSON response from n8n");
+      }
       
       if (data && data.message) {
         setMessages(prev => [...prev, { role: "assistant", content: data.message }]);
       } else {
-        throw new Error("Invalid response format");
+        throw new Error("Response missing 'message' field");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chatbot error:", error);
+      let errorMessage = "⚠️ Gemini service is temporarily unavailable. Please try again.";
+      
+      if (error.message.includes("Empty response")) {
+        errorMessage = "⚠️ Connected to n8n, but received no data. Please configure the 'Respond to Webhook' node in your workflow.";
+      } else if (error.message.includes("HTTP error")) {
+        errorMessage = `⚠️ Connection failed (${error.message}). Please check the n8n workflow status.`;
+      }
+
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "⚠️ Gemini service is temporarily unavailable. Please try again." 
+        content: errorMessage
       }]);
     } finally {
       setIsLoading(false);
