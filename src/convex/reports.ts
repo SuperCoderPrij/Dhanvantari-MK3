@@ -41,7 +41,7 @@ export const createReport = mutation({
     
     // Find user if logged in
     let reporterId;
-    if (identity) {
+    if (identity && identity.email) {
       const user = await ctx.db
         .query("users")
         .withIndex("email", (q) => q.eq("email", identity.email!))

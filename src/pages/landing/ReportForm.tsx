@@ -55,10 +55,10 @@ export function ReportForm() {
     try {
       await createReport({
         medicineName: formData.medicineName,
-        batchNumber: formData.batchNumber,
+        batchNumber: formData.batchNumber || undefined,
         reason: formData.reason,
-        location: formData.location,
-        description: formData.description,
+        location: formData.location || undefined,
+        description: formData.description || undefined,
       });
       
       setIsSuccess(true);
