@@ -157,6 +157,7 @@
 .glitch-text {
   position: relative;
   display: inline-block;
+  font-family: 'ByteBounce', sans-serif;
 }
 
 .glitch-text::before,
@@ -168,6 +169,7 @@
   width: 100%;
   height: 100%;
   background: #030014; /* Matches page background to hide main text parts */
+  font-family: inherit;
 }
 
 .glitch-text::before {
