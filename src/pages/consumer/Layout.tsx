@@ -62,9 +62,9 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <Sidebar>
-          <SidebarHeader className="border-b p-4">
+      <div className="flex min-h-screen w-full bg-slate-950 text-white">
+        <Sidebar className="border-r border-slate-800 bg-slate-900 text-white">
+          <SidebarHeader className="border-b border-slate-800 p-4">
             <div className="flex items-center gap-2">
               <img src="/logo.svg" alt="Dhanvantari" className="h-8 w-8" />
               <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-samarkan tracking-wide pt-1">Dhanvantari</span>
@@ -77,6 +77,7 @@ export default function Dashboard() {
                   <SidebarMenuButton
                     onClick={() => navigate(item.path)}
                     isActive={location.pathname === item.path}
+                    className="text-gray-400 hover:text-white hover:bg-slate-800 data-[active=true]:bg-slate-800 data-[active=true]:text-cyan-400"
                   >
                     <item.icon className="h-4 w-4" />
                     <span>{item.label}</span>
@@ -85,10 +86,10 @@ export default function Dashboard() {
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="border-t p-4">
+          <SidebarFooter className="border-t border-slate-800 p-4">
             <Button
               variant="ghost"
-              className="w-full justify-start"
+              className="w-full justify-start text-gray-400 hover:text-white hover:bg-slate-800"
               onClick={() => signOut()}
             >
               <LogOut className="h-4 w-4 mr-2" />
@@ -97,9 +98,9 @@ export default function Dashboard() {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-            <SidebarTrigger />
+        <SidebarInset className="flex-1 bg-slate-950">
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6">
+            <SidebarTrigger className="text-white hover:bg-slate-800" />
             <div className="flex-1" />
           </header>
           <main className="p-6">
