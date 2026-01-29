@@ -1,6 +1,6 @@
 import { useState, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { QrCode, Camera, CheckCircle, AlertTriangle, Sparkles, Bot } from "lucide-react";
+import { Camera, QrCode, CheckCircle, AlertTriangle, Sparkles, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -21,6 +21,8 @@ export function ScanActionCard() {
 
   const recordScan = useMutation(api.scans.recordScan);
   const askGemini = useAction(api.gemini.askAboutMedicine);
+  
+  // This query runs automatically when manualCode changes
   const getMedicineByQR = useQuery(api.medicines.getMedicineByQRCode, 
     manualCode ? { qrCodeData: manualCode } : "skip"
   );
@@ -48,26 +50,24 @@ export function ScanActionCard() {
     }
 
     setManualCode(decodedText);
-    try {
-        const parsed = JSON.parse(decodedText);
-        if (parsed.id) {
-            setManualCode(decodedText);
-        }
-    } catch (e) {
-        setManualCode(decodedText);
-    }
+    // Trigger verification logic after setting code
+    // Note: In a real scenario, we might want to wait for the query to update
+    // For now, we'll let the user click verify or handle it via effect if needed
+    // But to be snappy, we can try to simulate the scan immediately if we trust the query will be fast or if we just want to show the dialog state
     
-    setIsDialogOpen(false);
-    setAiResponse(null);
-    toast.success("QR Code Scanned!");
+    // For this component, let's just set the code and let the user click verify or auto-trigger if we want
+    // To keep it simple and consistent with previous logic:
+    // For this component, let's just set the code and let the user click verify or auto-trigger if we want
+    // To keep it simple and consistent with previous logic:
+    toast.success("QR Code Scanned! Click Verify to confirm.");
   };
 
   const handleSimulateScan = async () => {
     setIsScanning(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (!manualCode) {
-      toast.error("Please enter a QR code or Batch ID to simulate scan");
+      toast.error("Please enter a QR code or Batch ID");
       setIsScanning(false);
       return;
     }
@@ -84,8 +84,10 @@ export function ScanActionCard() {
         setAiResponse(null);
         toast.success("Medicine Verified: Genuine");
       } else {
-        setScanResult({ status: "unknown" });
-        toast.warning("Medicine not found in registry");
+        if (getMedicineByQR === null) {
+             setScanResult({ status: "unknown" });
+             toast.warning("Medicine not found in registry");
+        }
       }
     } catch (error) {
       console.error(error);
@@ -147,7 +149,7 @@ export function ScanActionCard() {
                 <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading Scanner...</div>}>
                   <QRScanner 
                     onScanSuccess={handleScanSuccess} 
-                    onScanFailure={(err: any) => console.log(err)}
+                    onScanFailure={(err: any) => {}}
                   />
                 </Suspense>
                 <div className="space-y-2">

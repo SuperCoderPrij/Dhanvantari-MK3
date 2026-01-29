@@ -7,6 +7,7 @@ import {
   Settings,
   LogOut,
   Activity,
+  History,
 } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useAuth } from "@/hooks/use-auth";
@@ -51,6 +52,7 @@ export default function Dashboard() {
   const menuItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
     { icon: Scan, label: "Scan Medicine", path: "/dashboard/scan" },
+    { icon: History, label: "Scan History", path: "/dashboard/history" },
     { icon: Pill, label: "Medicines", path: "/dashboard/medicines" },
     { icon: FileText, label: "Health Records", path: "/dashboard/records" },
     { icon: Activity, label: "Prescriptions", path: "/dashboard/prescriptions" },

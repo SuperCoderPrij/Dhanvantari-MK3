@@ -1,13 +1,20 @@
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { motion } from "framer-motion";
 import { History, Search, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router";
 
 interface RecentScansProps {
-  scanHistory: any[] | undefined;
+  limit?: number;
+  showViewAll?: boolean;
 }
 
-export function RecentScans({ scanHistory }: RecentScansProps) {
+export function RecentScans({ limit = 5, showViewAll = true }: RecentScansProps) {
+  const navigate = useNavigate();
+  const scanHistory = useQuery(api.scans.getUserScanHistory, { limit });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -17,9 +24,18 @@ export function RecentScans({ scanHistory }: RecentScansProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <History className="h-4 w-4 text-cyan-400" />
-          Recent Scans
+          {showViewAll ? "Recent Scans" : "Scan History"}
         </h3>
-        <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-cyan-300">View All</Button>
+        {showViewAll && (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-cyan-400 hover:text-cyan-300"
+            onClick={() => navigate("/dashboard/history")}
+          >
+            View All
+          </Button>
+        )}
       </div>
 
       <div className="space-y-3">

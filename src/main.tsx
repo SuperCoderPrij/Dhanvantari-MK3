@@ -23,6 +23,7 @@ const HealthRecords = lazy(() => import("./pages/consumer/HealthRecords"));
 const Prescriptions = lazy(() => import("./pages/consumer/Prescriptions"));
 const Alerts = lazy(() => import("./pages/consumer/Alerts"));
 const Settings = lazy(() => import("./pages/consumer/Settings"));
+const ScanHistory = lazy(() => import("./pages/consumer/ScanHistory"));
 
 // Manufacturer Pages
 const ManufacturerLayout = lazy(() => import("./pages/manufacturer/ManufacturerLayout"));
@@ -68,6 +69,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/dashboard" element={<ConsumerLayout />}>
                   <Route index element={<ConsumerDashboard />} />
                   <Route path="scan" element={<MedicineScan />} />
+                  <Route path="history" element={<ScanHistory />} />
                   <Route path="medicines" element={<Medicines />} />
                   <Route path="records" element={<HealthRecords />} />
                   <Route path="prescriptions" element={<Prescriptions />} />
