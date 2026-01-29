@@ -7,6 +7,7 @@ import { CTA } from "./landing/CTA";
 import { ReportForm } from "./landing/ReportForm";
 import { Location } from "./landing/Location";
 import { Footer } from "./landing/Footer";
+import { Team } from "./landing/Team";
 import { GeminiChatbot } from "@/components/GeminiChatbot";
 
 export default function Landing() {
@@ -145,6 +146,7 @@ export default function Landing() {
       <Hero />
       <HowItWorks />
       <UserGuide />
+      <Team />
       <CTA />
       <ReportForm />
       <Location />

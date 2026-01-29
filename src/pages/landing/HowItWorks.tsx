@@ -3,7 +3,7 @@ import { Activity, CheckCircle, Database, QrCode, Smartphone } from "lucide-reac
 
 export function HowItWorks() {
   return (
-    <section className="relative z-10 py-24 px-4 overflow-hidden">
+    <section id="how-it-works" className="relative z-10 py-24 px-4 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

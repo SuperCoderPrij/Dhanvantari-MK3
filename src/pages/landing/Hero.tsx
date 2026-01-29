@@ -7,7 +7,7 @@ export function Hero() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative z-10 pt-20 pb-32 px-4">
+    <section id="hero" className="relative z-10 pt-20 pb-32 px-4">
       <div className="max-w-7xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

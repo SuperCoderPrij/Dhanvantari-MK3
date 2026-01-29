@@ -1,9 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 export function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToSection = (id: string) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <nav className="relative z-10 flex items-center justify-between px-6 py-4 w-full">
@@ -20,6 +34,35 @@ export function Navbar() {
           Dhanvantari
         </span>
       </div>
+
+      {/* Navigation Links */}
+      <div className="hidden md:flex items-center gap-8 bg-slate-900/50 backdrop-blur-md px-8 py-3 rounded-full border border-white/10">
+        <button 
+          onClick={() => scrollToSection('hero')} 
+          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >
+          Home
+        </button>
+        <button 
+          onClick={() => scrollToSection('how-it-works')} 
+          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >
+          How it Works
+        </button>
+        <button 
+          onClick={() => scrollToSection('team')} 
+          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >
+          Team
+        </button>
+        <button 
+          onClick={() => scrollToSection('location')} 
+          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+        >
+          Contact
+        </button>
+      </div>
+
       <div className="flex items-center gap-2 md:gap-3">
         <Button
           onClick={() => {

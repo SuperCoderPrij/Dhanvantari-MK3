@@ -3,7 +3,7 @@ import { MapPin, Mail, Phone } from "lucide-react";
 
 export function Location() {
   return (
-    <section className="relative z-10 py-24 px-4">
+    <section id="location" className="relative z-10 py-24 px-4">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
