@@ -14,6 +14,16 @@ const teamMembers = [
       linkedin: "https://www.linkedin.com/in/priyanshu-jash-4602b9247/",
       twitter: "https://x.com/JPriyanshuTalks"
     }
+  },
+  {
+    name: "Neha Yadav",
+    role: "Frontend and UI/UX Developer",
+    image: "https://harmless-tapir-303.convex.cloud/api/storage/12751e9b-0364-4b0d-9f90-a41cb116b4b4",
+    bio: "Crafting intuitive and beautiful user interfaces to ensure a seamless and accessible experience for all users.",
+    social: {
+      github: "https://github.com/bestfriends3243",
+      linkedin: "https://www.linkedin.com/in/neha-yadav-8bb6212ba/"
+    }
   }
 ];
 
