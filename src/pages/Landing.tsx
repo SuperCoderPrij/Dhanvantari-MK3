@@ -8,6 +8,7 @@ import { ReportForm } from "./landing/ReportForm";
 import { Footer } from "./landing/Footer";
 
 export default function Landing() {
+  console.log("Landing page loaded");
   // Generate random stars for background animation
   const stars = Array.from({ length: 100 }).map((_, i) => ({
     id: i,
