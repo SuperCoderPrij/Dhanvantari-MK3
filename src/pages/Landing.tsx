@@ -7,6 +7,7 @@ import { CTA } from "./landing/CTA";
 import { ReportForm } from "./landing/ReportForm";
 import { Location } from "./landing/Location";
 import { Footer } from "./landing/Footer";
+import { GeminiChatbot } from "@/components/GeminiChatbot";
 
 export default function Landing() {
   console.log("Landing page loaded");
@@ -80,6 +81,7 @@ export default function Landing() {
       <ReportForm />
       <Location />
       <Footer />
+      <GeminiChatbot />
     </div>
   );
 }
