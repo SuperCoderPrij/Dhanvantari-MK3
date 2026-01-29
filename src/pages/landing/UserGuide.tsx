@@ -38,17 +38,17 @@ export function UserGuide() {
 
         <Tabs defaultValue="consumer" className="w-full">
           <div className="flex justify-center mb-12">
-            <TabsList className="bg-slate-900/50 border border-slate-800 p-1 h-auto">
+            <TabsList className="bg-slate-950/80 border border-slate-800 p-1.5 h-auto backdrop-blur-xl rounded-full">
               <TabsTrigger 
                 value="consumer" 
-                className="px-6 py-3 text-base md:text-lg data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 transition-all"
+                className="rounded-full px-8 py-3 text-base md:text-lg text-gray-400 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-300 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all"
               >
                 <Smartphone className="mr-2 h-5 w-5" />
                 For Consumers
               </TabsTrigger>
               <TabsTrigger 
                 value="manufacturer" 
-                className="px-6 py-3 text-base md:text-lg data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 transition-all"
+                className="rounded-full px-8 py-3 text-base md:text-lg text-gray-400 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all"
               >
                 <LayoutDashboard className="mr-2 h-5 w-5" />
                 For Manufacturers
