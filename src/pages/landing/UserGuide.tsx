@@ -32,20 +32,13 @@ export function UserGuide() {
             </span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Comprehensive instructions for Consumers and Manufacturers to navigate the Dhanvantari ecosystem.
+            Comprehensive instructions for Manufacturers and Consumers to navigate the Dhanvantari ecosystem.
           </p>
         </motion.div>
 
-        <Tabs defaultValue="consumer" className="w-full">
+        <Tabs defaultValue="manufacturer" className="w-full">
           <div className="flex justify-center mb-12">
             <TabsList className="bg-slate-950/80 border border-slate-800 p-1.5 h-auto backdrop-blur-xl rounded-full">
-              <TabsTrigger 
-                value="consumer" 
-                className="rounded-full px-8 py-3 text-base md:text-lg text-gray-400 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-300 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all"
-              >
-                <Smartphone className="mr-2 h-5 w-5" />
-                For Consumers
-              </TabsTrigger>
               <TabsTrigger 
                 value="manufacturer" 
                 className="rounded-full px-8 py-3 text-base md:text-lg text-gray-400 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all"
@@ -53,61 +46,15 @@ export function UserGuide() {
                 <LayoutDashboard className="mr-2 h-5 w-5" />
                 For Manufacturers
               </TabsTrigger>
+              <TabsTrigger 
+                value="consumer" 
+                className="rounded-full px-8 py-3 text-base md:text-lg text-gray-400 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-300 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all"
+              >
+                <Smartphone className="mr-2 h-5 w-5" />
+                For Consumers
+              </TabsTrigger>
             </TabsList>
           </div>
-
-          <TabsContent value="consumer" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-purple-400">
-                    <ScanLine className="h-6 w-6" />
-                    1. Scan Options
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300 space-y-4">
-                  <p>Access the scanner from the Dashboard or Home page. You have two ways to verify:</p>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
-                    <li><strong className="text-white">Camera Scan:</strong> Point your device's camera at the QR code on the medicine packaging.</li>
-                    <li><strong className="text-white">Manual Entry:</strong> If the QR is damaged, enter the Batch ID or Token ID manually in the input field.</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-purple-400">
-                    <ShieldCheck className="h-6 w-6" />
-                    2. Verification
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300 space-y-4">
-                  <p>Instantly receive verification results:</p>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
-                    <li><strong className="text-green-400">Authentic:</strong> The medicine is verified on the blockchain. You'll see manufacturing details and expiry dates.</li>
-                    <li><strong className="text-red-400">Suspicious:</strong> The code is invalid or not found. Do not consume the product.</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-purple-400">
-                    <FileText className="h-6 w-6" />
-                    3. Reporting
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-gray-300 space-y-4">
-                  <p>Help keep the community safe:</p>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
-                    <li>If a scan fails or you suspect a fake, use the <strong className="text-white">Report Form</strong> below.</li>
-                    <li>Provide details like location and photos to help manufacturers take action.</li>
-                    <li>View your scan history in the Dashboard to track past verifications.</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
           <TabsContent value="manufacturer" className="space-y-12">
             {/* Wallet Setup Section */}
@@ -186,6 +133,59 @@ export function UserGuide() {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="consumer" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-purple-400">
+                    <ScanLine className="h-6 w-6" />
+                    1. Scan Options
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-gray-300 space-y-4">
+                  <p>Access the scanner from the Dashboard or Home page. You have two ways to verify:</p>
+                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
+                    <li><strong className="text-white">Camera Scan:</strong> Point your device's camera at the QR code on the medicine packaging.</li>
+                    <li><strong className="text-white">Manual Entry:</strong> If the QR is damaged, enter the Batch ID or Token ID manually in the input field.</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-purple-400">
+                    <ShieldCheck className="h-6 w-6" />
+                    2. Verification
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-gray-300 space-y-4">
+                  <p>Instantly receive verification results:</p>
+                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
+                    <li><strong className="text-green-400">Authentic:</strong> The medicine is verified on the blockchain. You'll see manufacturing details and expiry dates.</li>
+                    <li><strong className="text-red-400">Suspicious:</strong> The code is invalid or not found. Do not consume the product.</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900/40 border-purple-500/20 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-purple-400">
+                    <FileText className="h-6 w-6" />
+                    3. Reporting
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-gray-300 space-y-4">
+                  <p>Help keep the community safe:</p>
+                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-400">
+                    <li>If a scan fails or you suspect a fake, use the <strong className="text-white">Report Form</strong> below.</li>
+                    <li>Provide details like location and photos to help manufacturers take action.</li>
+                    <li>View your scan history in the Dashboard to track past verifications.</li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
