@@ -10,7 +10,7 @@ import { Footer } from "./landing/Footer";
 import { GeminiChatbot } from "@/components/GeminiChatbot";
 
 export default function Landing() {
-  console.log("Landing page loaded");
+  console.log("Landing page loaded - v2");
   // Generate random stars for background animation
   const stars = Array.from({ length: 100 }).map((_, i) => ({
     id: i,

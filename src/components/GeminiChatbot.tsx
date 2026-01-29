@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles, Loader2, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type Message = {
@@ -105,7 +105,7 @@ export function GeminiChatbot() {
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
+            <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
               <div className="space-y-4">
                 {messages.map((msg, index) => (
                   <motion.div
@@ -144,7 +144,7 @@ export function GeminiChatbot() {
                 )}
                 <div ref={scrollRef} />
               </div>
-            </ScrollArea>
+            </div>
 
             {/* Input */}
             <div className="p-4 border-t border-slate-800 bg-slate-900/30">
