@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Navbar } from "./landing/Navbar";
 import { Hero } from "./landing/Hero";
 import { HowItWorks } from "./landing/HowItWorks";
+import { UserGuide } from "./landing/UserGuide";
 import { CTA } from "./landing/CTA";
 import { ReportForm } from "./landing/ReportForm";
 import { Footer } from "./landing/Footer";
@@ -72,6 +73,7 @@ export default function Landing() {
       <Navbar />
       <Hero />
       <HowItWorks />
+      <UserGuide />
       <CTA />
       <ReportForm />
       <Footer />
