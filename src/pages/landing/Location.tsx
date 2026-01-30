@@ -37,9 +37,9 @@ export function Location() {
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-1">Headquarters</h3>
                   <p className="text-gray-400">
-                    Dhanvantari Tech Park,<br />
-                    Sector V, Salt Lake City,<br />
-                    Kolkata, West Bengal 700091
+                    Bharti Vidyapeeth BVDU DMS,<br />
+                    Kharghar,<br />
+                    Navi Mumbai
                   </p>
                 </div>
               </div>
@@ -75,7 +75,7 @@ export function Location() {
             className="lg:col-span-2 h-[400px] rounded-2xl overflow-hidden border border-slate-800 shadow-[0_0_40px_rgba(6,182,212,0.1)] relative group"
           >
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.052648326636!2d88.4307866759619!3d22.57712393280565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0275b020703c0d%3A0xece6f8e0fc2e1613!2sSector%20V%2C%20Bidhannagar%2C%20Kolkata%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1709900000000!5m2!1sen!2sin" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.968667377886!2d73.0634873759619!3d19.02314793280565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c23c43449c57%3A0x60602633d400380!2sBharati%20Vidyapeeth%20Institute%20of%20Management%20Studies%20%26%20Research!5e0!3m2!1sen!2sin!4v1709900000000!5m2!1sen!2sin" 
               width="100%" 
               height="100%" 
               style={{ border: 0, filter: "invert(90%) hue-rotate(180deg)" }} 
