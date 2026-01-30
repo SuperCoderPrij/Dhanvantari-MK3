@@ -1,5 +1,7 @@
+"use node";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
+import crypto from "crypto";
 
 export const askAboutMedicine = action({
   args: {
@@ -16,12 +18,15 @@ export const askAboutMedicine = action({
     Provide a concise assessment of what a consumer should look for to verify this specific medicine.`;
     
     try {
+      // Generate a unique session ID for each verification request to ensure fresh context
+      const sessionId = crypto.randomUUID();
+
       // Reusing the n8n webhook for the verification assistant as well
       const response = await fetch("https://koreankimchi.app.n8n.cloud/webhook/3e2ca4cb-d824-400f-92d5-3634e18a4ba7", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-session-id": "verification-assistant",
+          "x-session-id": `verify-${sessionId}`,
         },
         body: JSON.stringify({ message: prompt }),
       });

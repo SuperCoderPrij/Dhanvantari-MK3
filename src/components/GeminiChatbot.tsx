@@ -75,10 +75,10 @@ export function GeminiChatbot() {
       
     } catch (error: any) {
       console.error("Chatbot error:", error);
-      let errorMessage = "⚠️ Gemini service is temporarily unavailable. Please try again.";
+      let errorMessage = "The assistant is currently unavailable. Please try again.";
       
       if (error.message.includes("HTTP error")) {
-        errorMessage = `⚠️ Connection failed (${error.message}).`;
+        errorMessage = "The assistant is currently unavailable. Please try again.";
       }
 
       setMessages(prev => [...prev, { 
