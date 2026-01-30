@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Sparkles, Loader2, Bot } from "lucide-react";
+import { X, Send, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-// import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type Message = {
@@ -11,7 +9,7 @@ type Message = {
   content: string;
 };
 
-const N8N_WEBHOOK_URL = "https://koreankimchi.app.n8n.cloud/webhook/40463dff-8417-49b6-9a47-6e438739b284";
+const N8N_WEBHOOK_URL = "https://koreankimchi.app.n8n.cloud/webhook/3e2ca4cb-d824-400f-92d5-3634e18a4ba7";
 
 export function GeminiChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,11 +20,23 @@ export function GeminiChatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Session ID management for conversation memory
+  const [sessionId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('chat_session_id');
+      if (stored) return stored;
+      const newId = crypto.randomUUID();
+      sessionStorage.setItem('chat_session_id', newId);
+      return newId;
+    }
+    return "default-session-" + Math.random().toString(36).substring(7);
+  });
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isOpen]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -45,6 +55,7 @@ export function GeminiChatbot() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-session-id": sessionId,
         },
         body: JSON.stringify({ message: userMessage }),
       });
@@ -53,31 +64,21 @@ export function GeminiChatbot() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      // The backend returns plain text (not JSON) as per requirements
       const text = await response.text();
+      
       if (!text) {
-        throw new Error("Empty response from n8n. Please add a 'Respond to Webhook' node.");
-      }
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error("Invalid JSON response from n8n");
+        throw new Error("Empty response from server");
       }
       
-      if (data && data.message) {
-        setMessages(prev => [...prev, { role: "assistant", content: data.message }]);
-      } else {
-        throw new Error("Response missing 'message' field");
-      }
+      setMessages(prev => [...prev, { role: "assistant", content: text }]);
+      
     } catch (error: any) {
       console.error("Chatbot error:", error);
       let errorMessage = "⚠️ Gemini service is temporarily unavailable. Please try again.";
       
-      if (error.message.includes("Empty response")) {
-        errorMessage = "⚠️ Connected to n8n, but received no data. Please configure the 'Respond to Webhook' node in your workflow.";
-      } else if (error.message.includes("HTTP error")) {
-        errorMessage = `⚠️ Connection failed (${error.message}). Please check the n8n workflow status.`;
+      if (error.message.includes("HTTP error")) {
+        errorMessage = `⚠️ Connection failed (${error.message}).`;
       }
 
       setMessages(prev => [...prev, { 
@@ -90,7 +91,7 @@ export function GeminiChatbot() {
   };
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-48 right-6 z-50 flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -137,7 +138,7 @@ export function GeminiChatbot() {
                   >
                     <div
                       className={cn(
-                        "max-w-[80%] px-4 py-3 text-sm leading-relaxed shadow-md",
+                        "max-w-[80%] px-4 py-3 text-sm leading-relaxed shadow-md whitespace-pre-wrap",
                         msg.role === "user" 
                           ? "bg-[#1f2937] text-white rounded-2xl rounded-tr-sm" 
                           : "bg-gradient-to-br from-[#4285F4] to-[#9B72FF] text-white rounded-2xl rounded-tl-sm"
