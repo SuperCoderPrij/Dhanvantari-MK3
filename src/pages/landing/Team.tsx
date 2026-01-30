@@ -7,7 +7,7 @@ const teamMembers = [
   {
     name: "Priyanshu Jash",
     role: "Backend & Blockchain Developer",
-    image: "https://harmless-tapir-303.convex.cloud/api/storage/34b82f69-01c6-4564-9514-d17ada167d56",
+    image: "https://harmless-tapir-303.convex.cloud/api/storage/02929f82-7a0e-4539-ae94-2914c2aa986c",
     bio: "Architecting the secure blockchain infrastructure and backend systems that power Dhanvantari's anti-counterfeit solution.",
     social: {
       github: "https://github.com/SuperCoderPrij",
