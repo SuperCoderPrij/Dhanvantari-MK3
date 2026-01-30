@@ -36,8 +36,19 @@ export function Navbar() {
         </span>
       </div>
 
-      {/* Navigation Sidebar */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
+        <Button
+          onClick={() => {
+            console.log("Navigating to dashboard");
+            navigate("/dashboard");
+          }}
+          className="hidden md:flex bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300"
+        >
+          Scan now
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+
+        {/* Navigation Sidebar */}
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-cyan-400 transition-colors">
@@ -75,22 +86,20 @@ export function Navbar() {
               >
                 Contact
               </button>
+
+              <Button
+                onClick={() => {
+                  console.log("Navigating to dashboard");
+                  navigate("/dashboard");
+                }}
+                className="md:hidden w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300 mt-4"
+              >
+                Scan now
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
           </SheetContent>
         </Sheet>
-      </div>
-
-      <div className="flex items-center gap-2 md:gap-3">
-        <Button
-          onClick={() => {
-            console.log("Navigating to dashboard");
-            navigate("/dashboard");
-          }}
-          className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300"
-        >
-          Scan now
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
       </div>
     </nav>
   );
