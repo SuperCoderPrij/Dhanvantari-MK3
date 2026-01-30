@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Menu } from "lucide-react";
+import { ArrowRight, Menu, Home, Info, Users, Phone } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 
@@ -61,41 +61,55 @@ export function Navbar() {
                 Menu
               </SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 mt-4">
               <button 
                 onClick={() => scrollToSection('hero')} 
-                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+                className="text-lg font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all text-left flex items-center gap-4 p-3 rounded-xl group"
               >
+                <div className="bg-cyan-500/10 p-2 rounded-lg group-hover:bg-cyan-500/20 transition-colors">
+                  <Home className="h-5 w-5 text-cyan-400" />
+                </div>
                 Home
               </button>
               <button 
                 onClick={() => scrollToSection('how-it-works')} 
-                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+                className="text-lg font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all text-left flex items-center gap-4 p-3 rounded-xl group"
               >
+                <div className="bg-purple-500/10 p-2 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                  <Info className="h-5 w-5 text-purple-400" />
+                </div>
                 How it Works
               </button>
               <button 
                 onClick={() => scrollToSection('team')} 
-                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+                className="text-lg font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all text-left flex items-center gap-4 p-3 rounded-xl group"
               >
+                <div className="bg-pink-500/10 p-2 rounded-lg group-hover:bg-pink-500/20 transition-colors">
+                  <Users className="h-5 w-5 text-pink-400" />
+                </div>
                 Team
               </button>
               <button 
                 onClick={() => scrollToSection('location')} 
-                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+                className="text-lg font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all text-left flex items-center gap-4 p-3 rounded-xl group"
               >
+                <div className="bg-green-500/10 p-2 rounded-lg group-hover:bg-green-500/20 transition-colors">
+                  <Phone className="h-5 w-5 text-green-400" />
+                </div>
                 Contact
               </button>
+
+              <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
 
               <Button
                 onClick={() => {
                   console.log("Navigating to dashboard");
                   navigate("/dashboard");
                 }}
-                className="md:hidden w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300 mt-4"
+                className="md:hidden w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all duration-300 py-6 text-lg"
               >
                 Scan now
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </SheetContent>
