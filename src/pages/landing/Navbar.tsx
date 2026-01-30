@@ -36,7 +36,7 @@ export function Navbar() {
       </div>
 
       {/* Navigation Links */}
-      <div className="hidden md:flex items-center gap-8 bg-slate-900/50 backdrop-blur-md px-8 py-3 rounded-full border border-white/10">
+      <div className="hidden md:flex items-center gap-10 bg-slate-900/80 backdrop-blur-md px-12 py-4 rounded-full border border-cyan-500/20 shadow-lg shadow-cyan-500/10">
         <button 
           onClick={() => scrollToSection('hero')} 
           className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
