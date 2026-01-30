@@ -1,2 +1,4 @@
-// src/pages/manufacturer/Medicines.tsx
-// ... check content ...
+    if (!text) {
+      throw new Error("Empty response from server");
+    }
+    
