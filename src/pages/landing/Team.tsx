@@ -75,40 +75,66 @@ export function Team() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm overflow-hidden hover:border-cyan-500/30 transition-all duration-300 group h-full">
-                <CardContent className="p-0 h-full flex flex-col">
-                  <div className="relative overflow-hidden aspect-[3/4]">
+              <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm overflow-hidden hover:border-cyan-500/30 transition-all duration-300 group h-full flex flex-col hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+                <CardContent className="p-0 flex flex-col h-full">
+                  {/* Image Container */}
+                  <div className="relative overflow-hidden aspect-[4/5] w-full border-b border-slate-800/50">
                     <img 
                       src={member.image} 
                       alt={member.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 object-top"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 object-top"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  {/* Content Container */}
+                  <div className="p-6 flex flex-col flex-grow relative">
+                    {/* Decorative line */}
+                    <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
-                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
-                      <p className="text-cyan-400 font-medium mb-3">{member.role}</p>
-                      <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
-                        {member.bio}
-                      </p>
-                      
-                      <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                        {member.social.linkedin && (
-                          <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors">
-                            <Linkedin className="h-5 w-5" />
-                          </a>
-                        )}
-                        {member.social.twitter && (
-                          <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-sky-400 transition-colors">
-                            <Twitter className="h-5 w-5" />
-                          </a>
-                        )}
-                        {member.social.github && (
-                          <a href={member.social.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                            <Github className="h-5 w-5" />
-                          </a>
-                        )}
-                      </div>
+                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">{member.name}</h3>
+                    <p className="text-sm font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                      {member.role}
+                    </p>
+                    
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                      {member.bio}
+                    </p>
+                    
+                    <div className="flex items-center gap-4 mt-auto pt-4 border-t border-slate-800/50">
+                      {member.social.linkedin && (
+                        <a 
+                          href={member.social.linkedin} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-2 rounded-full bg-slate-800/50 text-gray-400 hover:bg-[#0077b5] hover:text-white transition-all duration-300 hover:scale-110"
+                          title="LinkedIn"
+                        >
+                          <Linkedin className="h-4 w-4" />
+                        </a>
+                      )}
+                      {member.social.twitter && (
+                        <a 
+                          href={member.social.twitter} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-2 rounded-full bg-slate-800/50 text-gray-400 hover:bg-black hover:text-white transition-all duration-300 hover:scale-110"
+                          title="Twitter / X"
+                        >
+                          <Twitter className="h-4 w-4" />
+                        </a>
+                      )}
+                      {member.social.github && (
+                        <a 
+                          href={member.social.github} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-2 rounded-full bg-slate-800/50 text-gray-400 hover:bg-[#333] hover:text-white transition-all duration-300 hover:scale-110"
+                          title="GitHub"
+                        >
+                          <Github className="h-4 w-4" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </CardContent>
