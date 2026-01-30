@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -35,32 +36,48 @@ export function Navbar() {
         </span>
       </div>
 
-      {/* Navigation Links */}
-      <div className="hidden md:flex items-center gap-10 bg-slate-900/80 backdrop-blur-md px-12 py-4 rounded-full border border-cyan-500/20 shadow-lg shadow-cyan-500/10">
-        <button 
-          onClick={() => scrollToSection('hero')} 
-          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >
-          Home
-        </button>
-        <button 
-          onClick={() => scrollToSection('how-it-works')} 
-          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >
-          How it Works
-        </button>
-        <button 
-          onClick={() => scrollToSection('team')} 
-          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >
-          Team
-        </button>
-        <button 
-          onClick={() => scrollToSection('location')} 
-          className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-        >
-          Contact
-        </button>
+      {/* Navigation Sidebar */}
+      <div className="flex items-center">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-cyan-400 transition-colors">
+              <Menu className="h-8 w-8" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="bg-slate-950/95 backdrop-blur-xl border-l border-cyan-500/20 text-white w-[300px] z-[100]">
+            <SheetHeader>
+              <SheetTitle className="text-left text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-8 mt-4">
+                Menu
+              </SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-6">
+              <button 
+                onClick={() => scrollToSection('hero')} 
+                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+              >
+                Home
+              </button>
+              <button 
+                onClick={() => scrollToSection('how-it-works')} 
+                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+              >
+                How it Works
+              </button>
+              <button 
+                onClick={() => scrollToSection('team')} 
+                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+              >
+                Team
+              </button>
+              <button 
+                onClick={() => scrollToSection('location')} 
+                className="text-lg font-medium text-gray-300 hover:text-cyan-400 transition-colors text-left flex items-center gap-2"
+              >
+                Contact
+              </button>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
