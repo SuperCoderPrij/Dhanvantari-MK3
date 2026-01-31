@@ -137,6 +137,98 @@ This ensures users can **verify medicines and understand how to take them safely
 
 ---
 
+📋 Prerequisites
+ 
+Before setting up the project, ensure you have the following installed:
+1. Node.js (v18 or higher)
+2. Git
+3. Bun (This project uses Bun as the package manager)
+ 
+---
+ 
+💻 1. Install System Tools
+ 
+macOS
+Open your Terminal and run:
+# Install Homebrew (if not installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Node.js
+brew install node
+
+# Install Git
+brew install git
+
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+ 
+Linux (Ubuntu/Debian)
+Open your Terminal and run:
+# Update packages
+sudo apt update
+
+# Install Git
+sudo apt install git -y
+
+# Install Node.js (using nvm is recommended, or direct install)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+ 
+Windows
+Open PowerShell as Administrator:
+1. Install Node.js: Download and install from nodejs.org.
+2. Install Git: Download and install from git-scm.com.
+3. Install Bun:
+    powershell -c "irm bun.sh/install.ps1 | iex"
+ 
+---
+ 
+🚀 2. Project Setup (All Operating Systems)
+ 
+Once the tools are installed, follow these steps in your terminal (Command Prompt, PowerShell, or Bash):
+ 
+1. Clone the Repository
+git clone <your-repo-url>
+cd Dhanvantari-MK3
+ 
+2. Install Dependencies
+This project uses `bun` for fast dependency installation.
+bun install
+ 
+3. Setup Convex (Backend)
+You need to initialize the Convex backend. This will prompt you to log in to Convex and configure your project.
+npx convex dev
+•
+Follow the prompts in the browser to log in.
+•
+It will automatically create a `.env.local` file with your `CONVEX_DEPLOYMENT` and `VITE_CONVEX_URL`.
+ 
+4. Run the Development Server
+Open a new terminal window (keep `npx convex dev` running in the first one) and start the frontend:
+bun dev
+ 
+The app should now be running at `http://localhost:5173`.
+ 
+---
+ 
+🛠️ Troubleshooting & Additional Commands
+ 
+•
+Type Check: `bun run type-check` (Runs TypeScript validation)
+•
+Build for Production: `bun run build`
+•
+Lint Code: `bun run lint`
+ 
+Note on Environment Variables:
+If you are using the Gemini Chatbot or Blockchain features, ensure you have the necessary keys in your Convex dashboard or `.env` file as per the project documentation.
+ 
+•
+Convex Dashboard: Run `npx convex dashboard` to view your database and logs.
+
 ## 👥 Team
 **BYTE**  
 Openverse GDG Hackathon Submission
